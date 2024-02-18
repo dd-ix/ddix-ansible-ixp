@@ -1,0 +1,1 @@
+arouteserver_workdir: "{{ lookup('ansible.builtin.env', 'AROUTESERVER_WORKDIR', default=(playbook_dir + '/..')) }}"
