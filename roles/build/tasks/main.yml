@@ -1,0 +1,12 @@
+- name: create build directories
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/../{{ item }}"
+    state: directory
+  loop:
+    - dist
+    - arouteserver/cache
+
+- name: run arouteserver bird
+  ansible.builtin.shell: arouteserver bird --cfg arouteserver/arouteserver.yml -o dist/bird.conf
+  args:
+    chdir: "{{ playbook_dir }}/.."

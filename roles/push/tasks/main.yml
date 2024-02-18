@@ -1,0 +1,5 @@
+- name: push bird.conf
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../dist/bird-{{ bird_router_id }}.conf"
+    dest: /etc/bird/bird.conf
+    mode: 0640

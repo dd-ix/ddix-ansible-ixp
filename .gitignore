@@ -1,0 +1,5 @@
+.vscode/
+arouteserver/cache
+arouteserver/clients.yml
+arouteserver.log
+dist

@@ -1,0 +1,4 @@
+bird:
+  hosts:
+    ixp-rs01.dd-ix.net:
+    ixp-rs02.dd-ix.net:
