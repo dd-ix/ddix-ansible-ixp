@@ -10,3 +10,4 @@
     owner: bird-deploy
     group: bird
     mode: 0640
+    validate: /usr/sbin/bird -p -c %s
