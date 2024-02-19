@@ -48,6 +48,7 @@ cfg:
         enabled: true
       use_registrobr_bulk_whois_data:
         enabled: true
+        source: https://ftp.registro.br/pub/numeracao/origin/nicbr-asn-blk-latest.txt
     rpki_bgp_origin_validation:
       enabled: true
       reject_invalid: true
