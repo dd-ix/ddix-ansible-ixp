@@ -1,5 +1,12 @@
+- name: deploy local config knobs
+  ansible.builtin.template:
+    src: logging.local.j2
+    dest: /etc/bird/logging.local
+
 - name: push bird.conf
   ansible.builtin.copy:
     src: "{{ playbook_dir }}/../dist/bird-{{ bird_router_id }}.conf"
     dest: /etc/bird/bird.conf
+    owner: bird-deploy
+    group: bird
     mode: 0640
