@@ -7,12 +7,12 @@
     - dist
 
 - name: run arouteserver clients-from-euroix
-  ansible.builtin.shell: arouteserver clients-from-euroix --cfg arouteserver/arouteserver.yml --url "https://portal.dd-ix.net/api/v4/member-export/ixf/0.6?apikey={{ secrets.ixp_manager }}" -o "{{ arouteserver_workdir }}/dist/clients.yml" 1
+  ansible.builtin.shell: arouteserver clients-from-euroix --cfg arouteserver/arouteserver.yml --url "https://portal.dd-ix.net/api/v4/member-export/ixf/0.6?apikey={{ secrets.ixp_manager }}" --cache-dir "{{ arouteserver_workdir }}/cache" -o "{{ arouteserver_workdir }}/dist/clients.yml" 1
   args:
     chdir: "{{ playbook_dir }}/.."
 
 - name: run arouteserver bird
-  ansible.builtin.shell: arouteserver bird --cfg arouteserver/arouteserver.yml --clients "{{ arouteserver_workdir }}/dist/clients.yml" -o "{{ arouteserver_workdir }}/dist/bird.conf" --cache "{{ arouteserver_workdir }}/cache" --use-local-files logging
+  ansible.builtin.shell: arouteserver bird --cfg arouteserver/arouteserver.yml --clients "{{ arouteserver_workdir }}/dist/clients.yml" -o "{{ arouteserver_workdir }}/dist/bird.conf" --cache-dir "{{ arouteserver_workdir }}/cache" --use-local-files logging
   args:
     chdir: "{{ playbook_dir }}/.."
   environment:
