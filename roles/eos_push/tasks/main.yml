@@ -1,0 +1,4 @@
+- name: upload config file
+  ansible.builtin.copy:
+    src: "{{ hostvars.localhost.arouteserver_workdir }}/eos/{{ inventory_hostname }}.conf"
+    dest: /mnt/flash/ddix-config

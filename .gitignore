@@ -1,6 +1,6 @@
 .vscode/
 arouteserver/clients.yml
-arouteserver.log
-cache
-dist
 secrets.yml
+/cache
+/dist
+/eos

@@ -1,0 +1,3 @@
+dependencies:
+  - role: com_prepare
+  - role: com_secrets

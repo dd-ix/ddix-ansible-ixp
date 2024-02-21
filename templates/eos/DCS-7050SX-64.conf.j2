@@ -1,0 +1,111 @@
+!
+{{ ansible_managed|comment(decoration="! ") }}
+!
+aaa root ssh-key {{ secrets.eos.root_pubkey }}
+aaa authentication policy local allow-nopassword-remote-login
+!
+username admin role network-admin secret sha512 {{ secrets.eos.admin_hash }}
+username ddix-deploy role network-admin secret sha512 {{ secrets.eos.deploy_hash }}
+username ddix-deploy ssh-key {{ secrets.eos.root_pubkey }}
+!
+service interface unconnected expose
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+logging monitor warnings
+!
+hostname {{ inventory_hostname_short }}
+!
+sflow sample 300
+sflow vrf inband-mgmt destination 2a01:7700:80b0:4101::3
+sflow vrf inband-mgmt source-interface Loopback3
+sflow run
+!
+snmp-server contact DD-IX NOC <noc@dd-ix.net>
+snmp-server location {{ switch_vars.snmp_location }}
+snmp-server local-interface Loopback3
+snmp-server community {{ secrets.eos.snmp_community }} ro
+snmp-server vrf inband-mgmt
+!
+spanning-tree mode mstp
+!
+vlan 600
+   name IXP-Peering
+!
+{% block vlans %}
+{% endblock %}
+!
+vrf instance inband-mgmt
+!
+radius-server host 2a01:7700:80b0:6001::4 vrf inband-mgmt key 7 {{ secrets.eos.radius_key }}
+!
+aaa authentication login default local group radius
+aaa authentication login console local group radius
+!
+{% block interfaces %}
+{% endblock %}
+!
+ip routing
+ip routing vrf inband-mgmt
+!
+ipv6 unicast-routing
+ipv6 unicast-routing vrf inband-mgmt
+!
+ntp server vrf inband-mgmt 2a01:7700::3 iburst
+ntp server vrf inband-mgmt 2a01:7700::4 iburst
+ntp server vrf inband-mgmt 2a01:7700::5 iburst
+!
+router bgp 65044
+   router-id {{ switch_vars.router_id }}
+   no bgp default ipv4-unicast
+   maximum-paths 8 ecmp 8
+   bgp bestpath tie-break router-id
+   neighbor backbone peer group
+   neighbor backbone remote-as 65044
+   neighbor backbone update-source Loopback0
+   neighbor backbone send-community
+   neighbor backone peer group
+   neighbor 10.80.0.2 peer group backbone
+   !
+   vlan 600
+      rd 65044:20600
+      route-target both 65044:20600
+      redistribute learned
+   !
+   address-family evpn
+      neighbor backbone activate
+   !
+   address-family ipv6
+      neighbor backbone activate
+   !
+   vrf inband-mgmt
+      rd 65044:30001
+      route-target import evpn 65044:30001
+      route-target export evpn 65044:30001
+      router-id {{ switch_vars.router_id }}
+      redistribute connected
+      redistribute static
+      !
+      address-family ipv6
+         redistribute connected
+         redistribute static
+!
+router isis backbone
+   net {{ switch_vars.isis_net }}
+   is-type level-2
+   log-adjacency-changes
+   !
+   address-family ipv4 unicast
+      bfd all-interfaces
+   !
+   address-family ipv6 unicast
+      bfd all-interfaces
+      multi-topology
+!
+management ssh
+   vrf inband-mgmt
+      no shutdown
+!
+end

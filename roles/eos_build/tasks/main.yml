@@ -1,0 +1,7 @@
+- name: build switch configs
+  include_tasks: eos.yml
+  vars:
+    switch_vars: "{{ hostvars[switch_fqdn] }}"
+  loop: "{{ groups.eos }}"
+  loop_control:
+    loop_var: switch_fqdn

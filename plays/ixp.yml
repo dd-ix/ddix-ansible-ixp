@@ -1,0 +1,27 @@
+#!/usr/bin/env ansible-playbook
+
+- name: build configs
+  hosts: localhost
+  roles:
+    - bird_build
+    - eos_build
+  tags:
+    - build
+
+- name: push bird config
+  hosts: bird
+  roles:
+    - bird_push
+  tags:
+    - push
+    - bird_push
+
+- name: push eos config
+  hosts: eos
+  roles:
+    - eos_push
+  vars:
+    ansible_user: root
+  tags:
+    - push
+    - eos_push

@@ -1,0 +1,1 @@
+{"ts": 1708286164, "data": [{"prefix": "2001:67c:12b8::", "length": 48, "exact": false, "ge": null, "le": 128, "comment": null, "max_length": 128}, {"prefix": "2a01:7700::", "length": 32, "exact": false, "ge": null, "le": 128, "comment": null, "max_length": 128}]}

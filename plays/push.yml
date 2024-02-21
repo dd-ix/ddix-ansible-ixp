@@ -1,7 +1,0 @@
-#!/usr/bin/env ansible-playbook
-
-- name: push bird config
-  hosts: bird
-  serial: 1
-  roles:
-    - push

@@ -1,0 +1,8 @@
+- name: create build directories
+  ansible.builtin.file:
+    path: "{{ arouteserver_workdir }}/{{ item }}"
+    state: directory
+  loop:
+    - cache
+    - eos
+    - dist

@@ -1,6 +1,0 @@
-#!/usr/bin/env ansible-playbook
-
-- name: build bird config
-  hosts: localhost
-  roles:
-    - build
