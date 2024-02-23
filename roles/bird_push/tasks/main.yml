@@ -7,7 +7,7 @@
   ansible.builtin.copy:
     src: "{{ hostvars.localhost.arouteserver_workdir }}/dist/bird-{{ bird_router_id }}.conf"
     dest: /etc/bird/bird.conf
-    owner: bird-deploy
+    owner: ddix-deploy
     group: bird
     mode: 0640
     validate: /usr/sbin/bird -p -c %s
