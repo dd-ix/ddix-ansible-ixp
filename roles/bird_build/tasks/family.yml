@@ -1,0 +1,13 @@
+- name: build client peers
+  include_tasks: client.yml
+  vars:
+    client:
+      description: "{{ peer.custname }}"
+      ip: "{{ peer[family + 'address'] }}"
+      cfg:
+        filtering: {}
+  loop:
+    - ipv4
+    - ipv6
+  loop_control:
+    loop_var: family

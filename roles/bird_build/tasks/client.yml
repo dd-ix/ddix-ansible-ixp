@@ -1,0 +1,20 @@
+- name: set asn
+  ansible.builtin.set_fact:
+    client2: "{{ client|combine({ 'asn': peer.asn|int }) }}"
+
+- name: set max_prefix limit
+  ansible.builtin.set_fact:
+    client2: "{{ client2|combine({ 'cfg': {'filtering': {'max_prefix': {'limit_' + family: peer.maxprefixes }}}}, recursive=true) }}"
+
+- name: set as-set filter
+  ansible.builtin.set_fact:
+    client2: "{{ client2|combine({ 'cfg': {'filtering': {'irrdb': {'as_sets': [peer[family + 'peeringmacro']] }}}}, recursive=true) }}"
+  when: peer[family + 'peeringmacro'] != None
+
+- name: set md5 secret
+  ansible.builtin.set_fact:
+    client2: "{{ client2|combine({ 'password': peer[family + 'bgpmd5secret']}, recursive=true) }}"
+  when: peer[family + 'bgpmd5secret'] != None
+
+- ansible.builtin.set_fact:
+    ddix_peers: "{{ ddix_peers + [client2] }}"

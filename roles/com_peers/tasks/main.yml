@@ -1,0 +1,9 @@
+- name: get ixp-manager peers from database
+  community.mysql.mysql_query:
+    login_host: "{{ secrets.ixp_manager.login_host }}"
+    login_db: "{{ secrets.ixp_manager.login_db }}"
+    login_user: "{{ secrets.ixp_manager.login_user }}"
+    login_password: "{{ secrets.ixp_manager.login_password }}"
+    query: SELECT * FROM __DDIX__peers
+  check_mode: false
+  register: ixp_manager_peers
