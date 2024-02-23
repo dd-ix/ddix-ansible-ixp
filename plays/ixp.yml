@@ -3,6 +3,7 @@
 - name: build configs
   hosts: localhost
   roles:
+    - sflow_build
     - bird_build
     - eos_build
   tags:
@@ -15,6 +16,16 @@
   tags:
     - push
     - bird_push
+
+- name: push sflow config
+  hosts: sflow
+  roles:
+    - sflow_push
+  vars:
+    ansible_user: ixp-deploy
+  tags:
+    - push
+    - sflow_push
 
 - name: push eos config
   hosts: eos

@@ -1,0 +1,4 @@
+- name: upload meta.yml file
+  ansible.builtin.copy:
+    src: "{{ hostvars.localhost.arouteserver_workdir }}/dist/meta.yml"
+    dest: /var/lib/sflow_exporter/meta.yaml

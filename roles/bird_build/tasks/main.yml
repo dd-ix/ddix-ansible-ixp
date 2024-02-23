@@ -16,9 +16,6 @@
   loop_control:
     loop_var: peer
 
-- debug:
-    var: ddix_peers
-
 - name: build clients.yml from sql query
   ansible.builtin.template:
     src: clients.yml.j2
@@ -30,3 +27,4 @@
     chdir: "{{ playbook_dir }}/.."
   environment:
     PEERINGDB_API: "{{ secrets.peeringdb_api }}"
+  changed_when: false

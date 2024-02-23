@@ -1,0 +1,14 @@
+sflow_exporter_meta:
+  routers: []
+  agents:
+    ixp-cc-sw01:
+      label: ixp-cc-sw01.dd-ix.net
+      source: 2a01:7700:80b0:4000::1
+    ixp-c2-sw01:
+      label: ixp-c2-sw01.dd-ix.net
+      source: 2a01:7700:80b0:4000::2
+  ether_types:
+    0x0800:
+      label: IPv4
+    0x86DD:
+      label: IPv6

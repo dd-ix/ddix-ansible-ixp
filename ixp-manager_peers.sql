@@ -2,12 +2,14 @@
 -- all the required peer data to build:
 -- - arouteserver's clients.yml (including md5 secrets)
 -- - switchport configs including l2 address filters
-
 CREATE OR REPLACE VIEW `__DDIX__peers` AS
-SELECT `cu`.`name` AS `custname`,
+SELECT `vi`.`id` AS `vid`,
+  `cu`.`name` AS `custname`,
   `cu`.`autsys` AS `asn`,
   `pi`.`status` AS `status`,
-  `ixp_manager`.`vlan`.`id` AS `vlanid`,
+  `sw`.`name` AS `switchname`,
+  `sp`.`name` AS `switchport`,
+  `sp`.`ifIndex` AS `switchifidx`,
   `l2address`.`mac` AS `l2address`,
   `cu`.`maxprefixes` AS `maxprefixes`,
   `vli`.`ipv4enabled` AS `ipv4enabled`,
@@ -38,6 +40,9 @@ FROM (
       LEFT JOIN `l2address` ON(`l2address`.`vlan_interface_id` = `vli`.`id`)
     )
     JOIN `cust` `cu` ON(`cu`.`id` = `vi`.`custid`)
+    JOIN `switchport` `sp` ON(`pi`.`switchportid` = `sp`.`id`)
+    JOIN `switch` `sw` ON(`sp`.`switchid` = `sw`.`id`)
   )
 WHERE `pi`.`virtualinterfaceid` = `vi`.`id`
   AND `vli`.`virtualinterfaceid` = `vi`.`id`
+  AND `ixp_manager`.`vlan`.`id` = 1

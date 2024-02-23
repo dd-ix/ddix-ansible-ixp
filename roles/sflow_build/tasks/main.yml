@@ -1,0 +1,15 @@
+- name: add routers
+  include_tasks: router.yml
+  vars:
+    router:
+      mac: "{{ peer.l2address|ansible.utils.hwaddr('linux') }}"
+      agent: "{{ peer.switchname }}"
+      label: "{{ peer.asn }}"
+  loop: "{{ (ixp_manager_peers.query_result[0])|sort(attribute='asn') }}"
+  loop_control:
+    loop_var: peer
+
+- name: build meta.yml from sql query
+  ansible.builtin.template:
+    src: meta.yml.j2
+    dest: "{{ arouteserver_workdir }}/dist/meta.yml"
