@@ -1,21 +1,31 @@
 #!/usr/bin/env ansible-playbook
 
-- name: build configs
+- name: build sflow meta.yml
   hosts: localhost
   roles:
     - sflow_build
+  tags:
+    - build
+    - build_sflow
+    - sflow
+
+- name: build bird.conf
+  hosts: localhost
+  roles:
     - bird_build
+  tags:
+    - build
+    - build_bird
+    - bird
+
+- name: build eos config
+  hosts: localhost
+  roles:
     - eos_build
   tags:
     - build
-
-- name: push bird config
-  hosts: bird
-  roles:
-    - bird_push
-  tags:
-    - push
-    - bird_push
+    - build_eos
+    - eos
 
 - name: push sflow config
   hosts: sflow
@@ -25,7 +35,17 @@
     ansible_user: ixp-deploy
   tags:
     - push
-    - sflow_push
+    - push_sflow
+    - sflow
+
+- name: push bird config
+  hosts: bird
+  roles:
+    - bird_push
+  tags:
+    - push
+    - push_bird
+    - bird
 
 - name: push eos config
   hosts: eos
@@ -35,4 +55,5 @@
     ansible_user: root
   tags:
     - push
-    - eos_push
+    - push_eos
+    - eos
