@@ -3,8 +3,9 @@
 -- - arouteserver's clients.yml (including md5 secrets)
 -- - switchport configs including l2 address filters
 CREATE OR REPLACE VIEW `__DDIX__peers` AS
-SELECT `vi`.`id` AS `vid`,
+SELECT `vlan`.`number` AS `vlanid`,
   `cu`.`name` AS `custname`,
+  `cu`.`shortname` AS `slug`,
   `cu`.`autsys` AS `asn`,
   `pi`.`status` AS `status`,
   `sw`.`name` AS `switchname`,

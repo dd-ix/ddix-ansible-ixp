@@ -6,7 +6,7 @@
     - sflow_build
   tags:
     - build
-    - build_sflow
+    - sflow_build
     - sflow
 
 - name: build bird.conf
@@ -15,7 +15,7 @@
     - bird_build
   tags:
     - build
-    - build_bird
+    - bird_build
     - bird
 
 - name: build eos config
@@ -24,7 +24,7 @@
     - eos_build
   tags:
     - build
-    - build_eos
+    - eos_build
     - eos
 
 - name: push sflow config
@@ -35,7 +35,7 @@
     ansible_user: ixp-deploy
   tags:
     - push
-    - push_sflow
+    - sflow_push
     - sflow
 
 - name: push bird config
@@ -44,7 +44,7 @@
     - bird_push
   tags:
     - push
-    - push_bird
+    - bird_push
     - bird
 
 - name: push eos config
@@ -55,5 +55,5 @@
     ansible_user: root
   tags:
     - push
-    - push_eos
+    - eos_push
     - eos

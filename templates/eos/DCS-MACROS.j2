@@ -1,0 +1,123 @@
+{% macro iface_config(iftype, ifnum, settings) -%}
+{% set iface = "%s%d"|format(iftype, ifnum) %}
+{% if iftype == 'Ethernet' and settings.profile == 'peer' %}
+{{ iface_cfg_ethernet_peer(iface, ifnum) }}
+{% elif iftype == 'Ethernet' and settings.profile == 'underlay' %}
+{{ iface_cfg_ethernet_underlay(iface, settings.options) }}
+{% elif iftype == 'Ethernet' and settings.profile == 'unused' %}
+{{ iface_cfg_ethernet_unused(iface, settings.options) }}
+{% elif iftype == 'Loopback' and settings.profile == 'underlay' %}
+{{ iface_cfg_loopback_underlay(iface, settings.options) }}
+{% elif iftype == 'Loopback' and settings.profile == 'management' %}
+{{ iface_cfg_loopback_management(iface, settings.options) }}
+{% else %}
+{{ undef(hint='ASSERTION: unhandled iface profile %s for %s'|format(settings.profile, iface)) }}
+{% endif %}
+{%- endmacro -%}
+
+{% macro iface_cfg_ethernet_peer(iface, ifnum) -%}
+{% set peers = ixp_manager_peers.query_result|first|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short) %}
+interface {{ iface }}
+{% set len = peers|count %}
+{% if len == 0 %}
+   description IXP UNUSED
+   shutdown
+   mac access-group block in
+   storm-control broadcast level 0.01
+   storm-control multicast level 0.01
+   storm-control unknown-unicast level 0.01
+   no lldp transmit
+   no lldp receive
+{% elif len == 1 %}
+{% set peer = peers|first %}
+{% if peer.vlanid != 600 %}
+{{ undef(hint='ASSERTION: peering iface %s has unexpected vid %d'|format(iface, peer.vlanid)) }}
+{% endif %}
+   description IXP AS{{ peer.asn }} {{ peer.slug }}
+   switchport mode access
+   switchport access vlan 600
+   sflow enable
+   mac access-group peer-eth{{ ifnum }} in
+   storm-control broadcast level 0.01
+   storm-control multicast level 0.01
+   storm-control unknown-unicast level 0.01
+   no lldp transmit
+   no lldp receive
+{% else %}
+{{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
+{% endif %}
+{%- endmacro -%}
+
+{% macro iface_cfg_ethernet_underlay(iface, opts) -%}
+interface {{ iface }}
+   description {{ opts.description }}
+   mtu 9214
+   no switchport
+   ip address {{ opts.ipv4 }}
+   ipv6 address {{ opts.ipv6 }}
+   ipv6 address {{ opts.lladdr }} link-local
+   ipv6 nd ra disabled
+   isis enable backbone
+{%- endmacro -%}
+
+{% macro iface_cfg_ethernet_unused(iface, opts) -%}
+interface {{ iface }}
+   description UNUSED
+   shutdown
+{%- endmacro -%}
+
+{% macro iface_cfg_loopback_underlay(iface, opts) -%}
+interface {{ iface }}
+   description {{ opts.description }}
+   ip address {{ opts.ipv4 }}
+   ipv6 address {{ opts.ipv6 }}
+   isis enable backbone
+   isis passive
+{%- endmacro -%}
+
+{% macro iface_cfg_loopback_management(iface, opts) -%}
+interface {{ iface }}
+   description {{ opts.description }}
+   vrf inband-mgmt
+   ipv6 address {{ opts.ipv6 }}
+{%- endmacro -%}
+
+
+
+{% macro mac_acl_peer(ifnum) -%}
+{% set iface = "Ethernet%d"|format(ifnum) %}
+{% set peers = ixp_manager_peers.query_result|first|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short) %}
+{% set len = peers|count %}
+{% if len == 1 %}
+{% set peer = peers|first %}
+{% if peer.l2address %}
+mac access-list peer-eth{{ ifnum }}
+   10 remark AS{{ peer.asn }} allow arp broadcast
+   11 permit vlan 600 0x000 {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00
+ff:ff:ff:ff:ff:ff 00:00:00:00:00:00 arp
+   20 remark AS{{ peer.asn }} allow nd multicast
+   21 permit vlan 600 0x000 {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00
+33:33:ff:00:00:00 00:00:00:ff:ff:ff ipv6
+{% else %}
+   10 remark AS{{ peer.asn }} peer has no l2address
+   20 remark AS{{ peer.asn }} peer has no l2address
+{% endif %}
+   30 remark AS{{ peer.asn }} drop other broadcasts or multicasts
+   31 deny vlan 600 0x000 any 01:00:00:00:00:00 fe:ff:ff:ff:ff:ff log
+{% if peer.l2address %}
+   40 remark AS{{ peer.asn }} allow peering lan access
+   41 permit vlan 600 0x000 {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 any arp
+   42 permit vlan 600 0x000 {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 any ip
+   43 permit vlan 600 0x000 {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 any ipv6
+{% else %}
+   40 remark AS{{ peer.asn }} peer has no l2address
+{% endif %}
+   50 remark AS{{ peer.asn }} allow quarantine vlan
+   51 permit vlan 666 0x000 any any
+   100 remark AS{{ peer.asn }} drop any
+   101 deny any any log
+!
+{% elif len != 0 %}
+{{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
+{% endif %}
+{%- endmacro -%}

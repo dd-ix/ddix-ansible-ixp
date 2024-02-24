@@ -1,1 +1,55 @@
 {% extends "DCS-7050SX-64.conf.j2" %}
+
+{% block vlans %}
+{# metro-spanning peering lan #}
+vlan 600
+   name IXP-Peering
+!
+vlan 601
+   name IXP-Mgmt-CC
+!
+{# on-site quarantine #}
+vlan 666
+   name IXP-Quarantine-CC
+!
+{% endblock %}
+
+{% block interfaces %}
+interface Port-Channel43
+   description L2T ixp-rs01
+   switchport trunk allowed vlan 600,601
+   switchport mode trunk
+!
+{# vxlan: need to do recirculation #}
+interface Recirc-Channel1
+   description REC VxLAN
+   no switchport
+   switchport recirculation features vxlan
+{% for ifnum in range(1, 48) %}
+!
+{{ dcs.iface_config("Ethernet", ifnum, switch_vars.interfaces.Ethernet[ifnum]|default({"profile": "unused"})) -}}
+{% endfor %}
+{% for ifnum, settings in switch_vars.interfaces.Loopback|dictsort %}
+!
+{{ dcs.iface_config("Loopback", ifnum, settings) -}}
+{% endfor %}
+!
+interface Management1
+   ipv6 address 2001:db8::2/64
+{# vxlan: need to do recirculation #}
+{% for ifnum in range(1, 4) %}
+!
+interface UnconnectedEthernet{{ ifnum }}
+   description REC VxLAN
+   traffic-loopback source system device mac
+   channel-group recirculation 1
+{% endfor %}
+{# unused UnconnectedEthernet #}
+{% for ifnum in range(5, 16) %}
+!
+interface UnconnectedEthernet{{ ifnum }}
+   description REC UNUSED
+   shutdown
+{% endfor %}
+!
+{% endblock %}

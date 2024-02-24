@@ -1,3 +1,4 @@
+{% import 'DCS-MACROS.j2' as dcs with context -%}
 !
 {{ ansible_managed|comment(decoration="! ") }}
 !
@@ -18,9 +19,10 @@ logging monitor warnings
 !
 hostname {{ inventory_hostname_short }}
 !
-sflow sample 300
+sflow sample 15
 sflow vrf inband-mgmt destination 2a01:7700:80b0:4101::3
 sflow vrf inband-mgmt source-interface Loopback3
+sflow interface disable default
 sflow run
 !
 snmp-server contact DD-IX NOC <noc@dd-ix.net>
@@ -29,14 +31,10 @@ snmp-server local-interface Loopback3
 snmp-server community {{ secrets.eos.snmp_community }} ro
 snmp-server vrf inband-mgmt
 !
-spanning-tree mode mstp
-!
-vlan 600
-   name IXP-Peering
+spanning-tree mode none
 !
 {% block vlans %}
 {% endblock %}
-!
 vrf instance inband-mgmt
 !
 radius-server host 2a01:7700:80b0:6001::4 vrf inband-mgmt key 7 {{ secrets.eos.radius_key }}
@@ -46,6 +44,16 @@ aaa authentication login console local group radius
 !
 {% block interfaces %}
 {% endblock %}
+{# RFC8327: BGP Culling ACLs #}
+ipv6 access-list bgp-culling-ipv6
+   10 deny tcp 2001:7f8:19:1::/64 eq bgp 2001:7f8:19:1::/64
+   20 deny tcp 2001:7f8:19:1::/64 2001:7f8:19:1::/64 eq bgp
+   100 permit ipv6 any any
+!
+ip access-list bgp-culling-ipv4
+   10 deny tcp 193.178.185.0/24 eq bgp 193.178.185.0/24
+   20 deny tcp 193.178.185.0/24 193.178.185.0/24 eq bgp
+   100 permit ip any any
 !
 ip routing
 ip routing vrf inband-mgmt
@@ -53,6 +61,15 @@ ip routing vrf inband-mgmt
 ipv6 unicast-routing
 ipv6 unicast-routing vrf inband-mgmt
 !
+mac access-list block
+   100 remark drop any
+   101 deny any any log
+!
+{% for ifnum, settings in switch_vars.interfaces.Ethernet|dictsort %}
+{% if settings.profile == "peer" %}
+{{ dcs.mac_acl_peer(ifnum) -}}
+{% endif %}
+{% endfor %}
 ntp server vrf inband-mgmt 2a01:7700::3 iburst
 ntp server vrf inband-mgmt 2a01:7700::4 iburst
 ntp server vrf inband-mgmt 2a01:7700::5 iburst

@@ -1,3 +1,98 @@
 router_id: 10.80.0.1
 isis_net: 49.0000.0000.0001.00
 snmp_location: DE/Dresden/CityCenter/Carrier/S31
+
+interfaces:
+  Ethernet:
+    1:
+      profile: underlay
+      options:
+        description: RP
+        ipv4: 10.81.0.1/24
+        ipv6: 2a01:7700:80b0:5100::1/64
+        lladdr: fe80::1/64
+    2:
+      profile: underlay
+      options:
+        description: RP
+        ipv4: 10.81.1.1/24
+        ipv6: 2a01:7700:80b0:5101::1/64
+        lladdr: fe80::1/64
+    10:
+      profile: peer
+    11:
+      profile: peer
+    12:
+      profile: peer
+    13:
+      profile: peer
+    14:
+      profile: peer
+    15:
+      profile: peer
+    16:
+      profile: peer
+    17:
+      profile: peer
+    18:
+      profile: peer
+    19:
+      profile: peer
+    20:
+      profile: peer
+    21:
+      profile: peer
+    22:
+      profile: peer
+    23:
+      profile: peer
+    24:
+      profile: peer
+    25:
+      profile: peer
+    26:
+      profile: peer
+    27:
+      profile: peer
+    28:
+      profile: peer
+    29:
+      profile: peer
+    30:
+      profile: peer
+    31:
+      profile: peer
+    32:
+      profile: peer
+    33:
+      profile: peer
+    34:
+      profile: peer
+    35:
+      profile: peer
+    36:
+      profile: peer
+    37:
+      profile: peer
+    38:
+      profile: peer
+    39:
+      profile: peer
+  Loopback:
+    0:
+      profile: underlay
+      options:
+        description: LO BGP
+        ipv4: 10.80.0.1/32
+        ipv6: 2a01:7700:80b0:5000::1/128
+    1:
+      profile: underlay
+      options:
+        description: LO VTEP
+        ipv4: 10.80.1.1/32
+        ipv6: 2a01:7700:80b0:5001::1/128
+    3:
+      profile: management
+      options:
+        description: LO MGMT
+        ipv6:  2a01:7700:80b0:4000::1/128

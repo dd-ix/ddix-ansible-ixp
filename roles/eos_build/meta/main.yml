@@ -1,3 +1,4 @@
 dependencies:
   - role: com_prepare
+  - role: com_peers
   - role: com_secrets
