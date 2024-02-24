@@ -4,3 +4,4 @@ secrets.yml
 /cache
 /dist
 /eos
+/result
