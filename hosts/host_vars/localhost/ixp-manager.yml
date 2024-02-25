@@ -2,15 +2,20 @@ ixp_manager_portstatus:
   1:
     label: PEER
     profile: peering
+    bird: true
   2:
     label: DSBL
     profile: shutdown
+    bird: false
   3:
     label: SHUT
     profile: shutdown
+    bird: false
   4:
     label: NOXC
     profile: quarantine
+    bird: false
   5:
     label: QRTN
     profile: quarantine
+    bird: false
