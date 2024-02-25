@@ -1,11 +1,11 @@
 sflow_exporter_meta:
   routers:
     - agent: ixp-cc-sw01
-      interface: 9999999
+      interface: 44
       label: 57328
       mac: d4:f5:ef:35:22:f0
     - agent: ixp-c2-sw01
-      interface: 1000043
+      interface: 44
       label: 57328
       mac: d4:f5:ef:33:f9:90
   agents:
