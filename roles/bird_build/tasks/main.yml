@@ -29,3 +29,11 @@
   environment:
     PEERINGDB_API: "{{ secrets.peeringdb_api }}"
   changed_when: false
+
+- name: run arouteserver html
+  ansible.builtin.shell: arouteserver html --cfg arouteserver/arouteserver.yml --clients "{{ arouteserver_workdir }}/dist/clients.yml" -o "{{ arouteserver_workdir }}/dist/bird{% if build_masked %}.masked{% endif %}.html" --cache-dir "{{ arouteserver_workdir }}/cache"
+  args:
+    chdir: "{{ playbook_dir }}/.."
+  environment:
+    PEERINGDB_API: "{{ secrets.peeringdb_api }}"
+  changed_when: false
