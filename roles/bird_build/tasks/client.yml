@@ -14,7 +14,12 @@
 - name: set md5 secret
   ansible.builtin.set_fact:
     client2: "{{ client2|combine({ 'password': peer[family + 'bgpmd5secret']}, recursive=true) }}"
-  when: peer[family + 'bgpmd5secret'] != None
+  when: peer[family + 'bgpmd5secret'] != None and not build_masked
+
+- name: mask md5 secret
+  ansible.builtin.set_fact:
+    client2: "{{ client2|combine({ 'password': '{MASKED}'}, recursive=true) }}"
+  when: peer[family + 'bgpmd5secret'] != None and build_masked
 
 - ansible.builtin.set_fact:
     ddix_peers: "{{ ddix_peers + [client2] }}"

@@ -23,7 +23,7 @@
     dest: "{{ arouteserver_workdir }}/dist/clients.yml"
 
 - name: run arouteserver bird
-  ansible.builtin.shell: arouteserver bird --cfg arouteserver/arouteserver.yml --clients "{{ arouteserver_workdir }}/dist/clients.yml" -o "{{ arouteserver_workdir }}/dist/bird.conf" --cache-dir "{{ arouteserver_workdir }}/cache" --use-local-files logging
+  ansible.builtin.shell: arouteserver bird --cfg arouteserver/arouteserver.yml --clients "{{ arouteserver_workdir }}/dist/clients.yml" -o "{{ arouteserver_workdir }}/dist/bird{% if build_masked %}.masked{% endif %}.conf" --cache-dir "{{ arouteserver_workdir }}/cache" --use-local-files logging
   args:
     chdir: "{{ playbook_dir }}/.."
   environment:

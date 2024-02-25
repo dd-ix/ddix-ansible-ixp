@@ -1,3 +1,8 @@
 - name: parse secrets
   ansible.builtin.set_fact:
     secrets: "{{ lookup('ansible.builtin.file', lookup('ansible.builtin.env', 'AROUTESERVER_SECRETS_FILE', default=(playbook_dir + '/../secrets.yml')))|from_yaml }}"
+
+- name: mask secrets
+  ansible.builtin.set_fact:
+    secrets: "{{ secrets|combine(secrets_masked) }}"
+  when: build_masked

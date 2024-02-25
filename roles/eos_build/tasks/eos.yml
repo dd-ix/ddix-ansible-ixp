@@ -1,4 +1,4 @@
 - name: build eos config
   ansible.builtin.template:
     src: "{{ playbook_dir }}/../templates/eos/{{ switch_fqdn }}.conf.j2"
-    dest: "{{ arouteserver_workdir }}/eos/{{ switch_fqdn }}.conf"
+    dest: "{{ arouteserver_workdir }}/eos/{{ switch_fqdn }}{% if build_masked %}.masked{% endif %}.conf"
