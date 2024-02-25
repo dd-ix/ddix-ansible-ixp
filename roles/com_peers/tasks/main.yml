@@ -25,6 +25,7 @@
       - peer.asn > 0 and peer.asn < 64512
       - peer.maxprefixes|type_debug == 'int'
       - peer.maxprefixes > 0
+      - peer.status in ixp_manager_portstatus
       - peer.custname is match('^[a-zA-Z0-9_. -]+$')
       - peer.slug is match('^[A-Za-z0-9_.-]+$')
       - peer.l2address == None or peer.l2address is match('^[0-9a-f]{12}$')
@@ -40,7 +41,7 @@
       - peer.switchname in ['ixp-cc-sw01', 'ixp-c2-sw01']
       - peer.vlanid|type_debug == 'int'
       - peer.vlanid == 600
-    msg: "failed validation for peer AS{{ peer.asn }}"
+    msg: "validation failed at peer AS{{ peer.asn }}"
     quiet: true
   loop: "{{ ixp_manager_peers }}"
   loop_control:
