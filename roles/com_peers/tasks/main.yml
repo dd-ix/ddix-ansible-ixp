@@ -22,7 +22,7 @@
   ansible.builtin.assert:
     that:
       - peer.asn|type_debug == 'int'
-      - peer.asn > 0 and peer.asn < 64512
+      - (peer.asn > 0 and peer.asn < 64512) or (peer.asn > 131071 and peer.asn < 4200000000)
       - peer.maxprefixes|type_debug == 'int'
       - peer.maxprefixes > 0
       - peer.status in ixp_manager_portstatus
