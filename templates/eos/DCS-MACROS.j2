@@ -15,12 +15,8 @@
 {% endif %}
 {%- endmacro -%}
 
-{% macro iface_cfg_ethernet_peer(iface, ifnum) -%}
-{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short) %}
-interface {{ iface }}
-{% set len = peers|count %}
-{% if len == 0 %}
-   description IXP UNUSED
+{% macro iface_cfg_ethernet_peer_free() %}
+   description FREE UNASSIGNED
    shutdown
    mac access-group block in
    storm-control broadcast level 0.01
@@ -28,9 +24,10 @@ interface {{ iface }}
    storm-control unknown-unicast level 0.01
    no lldp transmit
    no lldp receive
-{% elif len == 1 %}
-{% set peer = peers|first %}
-   description IXP AS{{ peer.asn }} {{ peer.slug }}
+{%- endmacro -%}
+
+{% macro iface_cfg_ethernet_peer_peering(ifnum, status, peer) %}
+   description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    switchport access vlan 600
    ip verify source
    mac access-group peer-eth{{ ifnum }} in
@@ -40,6 +37,51 @@ interface {{ iface }}
    storm-control broadcast level 0.01
    storm-control multicast level 0.01
    storm-control unknown-unicast level 0.01
+{%- endmacro -%}
+
+{% macro iface_cfg_ethernet_peer_quarantine(ifnum, status, peer) %}
+   description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
+   switchport access vlan 666
+   ip verify source
+   mac access-group peer-eth{{ ifnum }} in
+   no lldp transmit
+   no lldp receive
+   storm-control broadcast level 0.01
+   storm-control multicast level 0.01
+   storm-control unknown-unicast level 0.01
+{%- endmacro -%}
+
+{% macro iface_cfg_ethernet_peer_shutdown(ifnum, status, peer) %}
+   description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
+   shutdown
+   switchport access vlan 666
+   ip verify source
+   mac access-group peer-eth{{ ifnum }} in
+   no lldp transmit
+   no lldp receive
+   storm-control broadcast level 0.01
+   storm-control multicast level 0.01
+   storm-control unknown-unicast level 0.01
+{%- endmacro -%}
+
+{% macro iface_cfg_ethernet_peer(iface, ifnum) -%}
+{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short) %}
+interface {{ iface }}
+{% set len = peers|count %}
+{% if len == 0 %}
+{{ iface_cfg_ethernet_peer_free() }}
+{% elif len == 1 %}
+{% set peer = peers|first %}
+{% set status = ixp_manager_portstatus[peer.status] %}
+{% if status.profile == "peering" %}
+{{ iface_cfg_ethernet_peer_peering(ifnum, status, peer) }}
+{% elif status.profile == "shutdown" %}
+{{ iface_cfg_ethernet_peer_shutdown(ifnum, status, peer) }}
+{% elif status.profile == "quarantine" %}
+{{ iface_cfg_ethernet_peer_quarantine(ifnum, status, peer) }}
+{% else %}
+{{ undef(hint='ASSERTION: unhandled portstatus profile %s'|format(status.profile)) }}
+{% endif %}
 {% else %}
 {{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
 {% endif %}

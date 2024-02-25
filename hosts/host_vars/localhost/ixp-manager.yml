@@ -1,0 +1,16 @@
+ixp_manager_portstatus:
+  1:
+    label: PEER
+    profile: peering
+  2:
+    label: DSBL
+    profile: shutdown
+  3:
+    label: SHUT
+    profile: shutdown
+  4:
+    label: NOXC
+    profile: quarantine
+  5:
+    label: QRTN
+    profile: quarantine
