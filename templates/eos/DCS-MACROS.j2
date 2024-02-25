@@ -34,15 +34,15 @@ interface {{ iface }}
 {{ undef(hint='ASSERTION: peering iface %s has unexpected vid %d'|format(iface, peer.vlanid)) }}
 {% endif %}
    description IXP AS{{ peer.asn }} {{ peer.slug }}
-   switchport mode access
    switchport access vlan 600
-   sflow enable
+   ip verify source
    mac access-group peer-eth{{ ifnum }} in
+   no lldp transmit
+   no lldp receive
+   sflow enable
    storm-control broadcast level 0.01
    storm-control multicast level 0.01
    storm-control unknown-unicast level 0.01
-   no lldp transmit
-   no lldp receive
 {% else %}
 {{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
 {% endif %}
@@ -118,4 +118,24 @@ mac access-list peer-eth{{ ifnum }}
 {% elif len != 0 %}
 {{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
 {% endif %}
+{%- endmacro -%}
+
+
+
+{% macro ip_source_binding() -%}
+{% for peer in ixp_manager_peers.query_result|first|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short)|sort(attribute='l2address') %}
+{% if peer.l2address %}
+ip source binding {{ peer.ipv4address }} {{ peer.l2address|ansible.utils.hwaddr('linux') }} vlan 600 interface {{ peer.switchport }}
+{% endif %}
+{% endfor %}
+{%- endmacro -%}
+
+
+
+{% macro mac_address_table() -%}
+{% for peer in ixp_manager_peers.query_result|first|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short)|sort(attribute='l2address') %}
+{% if peer.l2address %}
+mac address-table static {{ peer.l2address|ansible.utils.hwaddr('cisco') }} vlan 600 interface {{ peer.switchport }}
+{% endif %}
+{% endfor %}
 {%- endmacro -%}

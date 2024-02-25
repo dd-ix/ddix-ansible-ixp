@@ -13,6 +13,9 @@ service interface unconnected expose
 !
 transceiver qsfp default-mode 4x10G
 !
+{% block ip_source_binding %}
+{% endblock %}
+!
 service routing protocols model multi-agent
 !
 logging monitor warnings
@@ -43,6 +46,9 @@ aaa authentication login default local group radius
 aaa authentication login console local group radius
 !
 {% block interfaces %}
+{% endblock %}
+!
+{% block mac_address_table %}
 {% endblock %}
 {# RFC8327: BGP Culling ACLs #}
 ipv6 access-list bgp-culling-ipv6
