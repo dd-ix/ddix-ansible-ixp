@@ -7,3 +7,43 @@
     query: SELECT * FROM __DDIX__peers
   check_mode: false
   register: ixp_manager_peers
+
+- name: check number of result sets
+  ansible.builtin.assert:
+    that:
+      - ixp_manager_peers.query_result|count == 1
+    msg: "unexpected number of result sets ({{ ixp_manager_peers.query_result|count }})"
+
+- name: extract result set
+  ansible.builtin.set_fact:
+    ixp_manager_peers: "{{ ixp_manager_peers.query_result|first }}"
+
+- name: validate peer configs
+  ansible.builtin.assert:
+    that:
+      - peer.asn|type_debug == 'int'
+      - peer.asn > 0 and peer.asn < 64512
+      - peer.maxprefixes|type_debug == 'int'
+      - peer.maxprefixes > 0
+      - peer.custname is match('^[a-zA-Z0-9_. -]+$')
+      - peer.slug is match('^[A-Za-z0-9_.-]+$')
+      - peer.l2address == None or peer.l2address is match('^[0-9a-f]{12}$')
+      - peer.ipv4address|ansible.utils.ipv4('address') == peer.ipv4address
+      - peer.ipv4bgpmd5secret is match('^[a-zA-Z0-9]*$')
+      - peer.ipv4hostname is match('^(((?!-))(xn--|_)?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9\-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$')
+      - peer.ipv4peeringmacro == None or peer.ipv4peeringmacro is match('^[A-Z0-9-]+$')
+      - peer.ipv6address|ansible.utils.ipv6('address') == peer.ipv6address
+      - peer.ipv6bgpmd5secret is match('^[a-zA-Z0-9]*$')
+      - peer.ipv6hostname is match('^(((?!-))(xn--|_)?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9\-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$')
+      - peer.ipv6peeringmacro == None or peer.ipv6peeringmacro is match('^[A-Z0-9-]+$')
+      - peer.switchport is match('^Ethernet\d{1,2}$')
+      - peer.switchname in ['ixp-cc-sw01', 'ixp-c2-sw01']
+      - peer.vlanid|type_debug == 'int'
+      - peer.vlanid == 600
+    msg: "failed validation for peer AS{{ peer.asn }}"
+    quiet: true
+  loop: "{{ ixp_manager_peers }}"
+  loop_control:
+    loop_var: peer
+    label: "{{ peer.switchname }} {{ peer.switchport }} AS{{ peer.asn }}"
+

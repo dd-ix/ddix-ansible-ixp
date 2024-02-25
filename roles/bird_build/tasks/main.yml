@@ -12,7 +12,7 @@
 
 - name: prepare clients in address families
   include_tasks: family.yml
-  loop: "{{ (ixp_manager_peers.query_result[0])|sort(attribute='asn') }}"
+  loop: "{{ ixp_manager_peers|sort(attribute='asn') }}"
   loop_control:
     loop_var: peer
 
