@@ -1,7 +1,3 @@
-- name: add router's ifindex
-  ansible.builtin.set_fact:
-    router2: "{{ router|combine({'interface': peer.switchifidx}) }}"
-
 - name: append router
   ansible.builtin.set_fact:
     sflow_exporter_meta: "{{ sflow_exporter_meta|combine({ 'routers': sflow_exporter_meta.routers + [router2] })}}"
