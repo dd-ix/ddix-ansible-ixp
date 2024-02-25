@@ -3,7 +3,6 @@
   vars:
     router:
       mac: "{{ peer.l2address|ansible.utils.hwaddr('linux') }}"
-      agent: "{{ peer.switchname }}"
       label: "{{ peer.asn }}"
   loop: "{{ (ixp_manager_peers.query_result[0])|sort(attribute='asn') }}"
   loop_control:

@@ -1,19 +1,13 @@
 sflow_exporter_meta:
   routers:
-    - agent: ixp-cc-sw01
-      interface: 44
-      label: 57328
+    - label: 57328
       mac: d4:f5:ef:35:22:f0
-    - agent: ixp-c2-sw01
-      interface: 44
-      label: 57328
+    - label: 57328
       mac: d4:f5:ef:33:f9:90
   agents:
-    ixp-cc-sw01:
-      label: ixp-cc-sw01.dd-ix.net
+    - label: ixp-cc-sw01.dd-ix.net
       source: 2a01:7700:80b0:4000::1
-    ixp-c2-sw01:
-      label: ixp-c2-sw01.dd-ix.net
+    - label: ixp-c2-sw01.dd-ix.net
       source: 2a01:7700:80b0:4000::2
   ether_types:
     0x0800:
