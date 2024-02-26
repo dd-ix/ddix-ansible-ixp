@@ -1,4 +1,4 @@
-o{ lib, pkgs, arouteserver, ... }:
+{ lib, pkgs, arouteserver, ... }:
 let
   self = lib.cleanSource ./.;
   python3 = pkgs.python3.withPackages (pp: with pp; [ matrix-client mysqlclient ]);
