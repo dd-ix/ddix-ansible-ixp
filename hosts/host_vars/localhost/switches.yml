@@ -1,0 +1,7 @@
+pop_switches:
+  ixp-cc-sw01:
+    communities:
+      - ddix_pop_cc
+  ixp-c2-sw01:
+    communities:
+      - ddix_pop_c2

@@ -21,5 +21,10 @@
     client2: "{{ client2|combine({ 'password': '{MASKED}'}, recursive=true) }}"
   when: peer[family + 'bgpmd5secret'] != None and build_masked
 
+- name: set pop community
+  ansible.builtin.set_fact:
+    client2: "{{ client2|combine({ 'cfg': { 'attach_custom_communities': pop_switches[peer.switchname].communities }}, recursive=true) }}"
+
+
 - ansible.builtin.set_fact:
     ddix_peers: "{{ ddix_peers + [client2] }}"

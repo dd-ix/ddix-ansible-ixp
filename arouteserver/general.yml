@@ -15,8 +15,10 @@ cfg:
     global_black_list_pref:
     - prefix: 193.201.151.64
       length: 26
+      comment: DD-IX Peering LAN
     - prefix: '2001:7f8:79::'
       length: 48
+      comment: DD-IX Peering LAN
     max_as_path_len: 32
     reject_invalid_as_in_as_path: true
     transit_free:
@@ -174,3 +176,8 @@ cfg:
       std: 65282:peer_as
       ext: rt:65282:peer_as
       lrg: rs_as:65282:peer_as
+  custom_communities:
+    ddix_pop_cc:
+      lrg: rs_as:2000:1
+    ddix_pop_c2:
+      lrg: rs_as:2000:2
