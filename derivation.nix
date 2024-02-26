@@ -1,7 +1,7 @@
-{ lib, pkgs, arouteserver, ... }:
+o{ lib, pkgs, arouteserver, ... }:
 let
   self = lib.cleanSource ./.;
-  python3 = pkgs.python3.withPackages (pp: with pp; [ mysqlclient ]);
+  python3 = pkgs.python3.withPackages (pp: with pp; [ matrix-client mysqlclient ]);
 in
 pkgs.writeShellApplication {
   name = "ddix-ansible-ixp";
