@@ -73,6 +73,8 @@ mac access-list block
 {{ dcs.mac_acl_peer(ifnum) -}}
 {% endif %}
 {% endfor %}
+{% block routes %}
+{% endblock %}
 ntp server vrf inband-mgmt 2a01:7700::3 iburst
 ntp server vrf inband-mgmt 2a01:7700::4 iburst
 ntp server vrf inband-mgmt 2a01:7700::5 iburst

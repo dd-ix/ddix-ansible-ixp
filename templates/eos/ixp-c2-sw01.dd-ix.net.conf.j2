@@ -64,3 +64,10 @@ interface UnconnectedEthernet{{ ifnum }}
 {{ dcs.mac_address_table() }}
 !
 {% endblock %}
+
+
+
+{% block routes %}
+ipv6 route vrf inband-mgmt ::/0 2a01:7700:80b0:4100::1
+!
+{% endblock %}
