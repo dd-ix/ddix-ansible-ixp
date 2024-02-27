@@ -49,13 +49,13 @@ aaa authentication login console local group radius
 {% endblock %}
 {# RFC8327: BGP Culling ACLs #}
 ipv6 access-list bgp-culling-ipv6
-   10 deny tcp 2001:7f8:19:1::/64 eq bgp 2001:7f8:19:1::/64
-   20 deny tcp 2001:7f8:19:1::/64 2001:7f8:19:1::/64 eq bgp
+   10 deny tcp 2001:7f8:79::/64 eq bgp 2001:7f8:79::/64
+   20 deny tcp 2001:7f8:79::/64 2001:7f8:79::/64 eq bgp
    100 permit ipv6 any any
 !
 ip access-list bgp-culling-ipv4
-   10 deny tcp 193.178.185.0/24 eq bgp 193.178.185.0/24
-   20 deny tcp 193.178.185.0/24 193.178.185.0/24 eq bgp
+   10 deny tcp 193.201.151.64/26 eq bgp 193.201.151.64/26
+   20 deny tcp 193.201.151.64/26 193.201.151.64/26 eq bgp
    100 permit ip any any
 !
 ip routing
