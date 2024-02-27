@@ -58,14 +58,6 @@ interface UnconnectedEthernet{{ ifnum }}
 
 
 
-{% block ip_source_binding %}
-{# Peers: ip source bindings #}
-{{ dcs.ip_source_binding() -}}
-!
-{% endblock %}
-
-
-
 {% block mac_address_table %}
 {# Peers: static mac-address table entries #}
 {{ dcs.mac_address_table() -}}

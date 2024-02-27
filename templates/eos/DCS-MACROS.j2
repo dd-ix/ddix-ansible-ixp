@@ -29,7 +29,6 @@
 {% macro iface_cfg_ethernet_peer_peering(ifnum, status, peer) %}
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    switchport access vlan 600
-   ip verify source
    mac access-group peer-eth{{ ifnum }} in
    no lldp transmit
    no lldp receive
@@ -42,7 +41,6 @@
 {% macro iface_cfg_ethernet_peer_quarantine(ifnum, status, peer) %}
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    switchport access vlan 666
-   ip verify source
    mac access-group peer-eth{{ ifnum }} in
    no lldp transmit
    no lldp receive
@@ -55,7 +53,6 @@
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    shutdown
    switchport access vlan 666
-   ip verify source
    mac access-group peer-eth{{ ifnum }} in
    no lldp transmit
    no lldp receive
@@ -157,16 +154,6 @@ mac access-list peer-eth{{ ifnum }}
 {% elif len != 0 %}
 {{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
 {% endif %}
-{%- endmacro -%}
-
-
-
-{% macro ip_source_binding() -%}
-{% for peer in ixp_manager_peers|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short)|sort(attribute='l2address') %}
-{% if peer.l2address %}
-ip source binding {{ peer.ipv4address }} {{ peer.l2address|ansible.utils.hwaddr('linux') }} vlan 600 interface {{ peer.switchport }}
-{% endif %}
-{% endfor %}
 {%- endmacro -%}
 
 
