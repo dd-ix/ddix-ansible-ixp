@@ -17,7 +17,7 @@ service routing protocols model multi-agent
 !
 logging monitor warnings
 !
-hostname {{ inventory_hostname_short }}
+hostname {{ switch_vars.inventory_hostname_short }}
 !
 sflow sample 15
 sflow vrf inband-mgmt destination 2a01:7700:80b0:4101::3
