@@ -1,5 +1,5 @@
 {% macro iface_config(iftype, ifnum, settings) -%}
-{% set iface = "%s%d"|format(iftype, ifnum) %}
+{% set iface = "%s%s"|format(iftype, ifnum) %}
 {% if iftype == 'Ethernet' and settings.profile == 'peer' %}
 {{ iface_cfg_ethernet_peer(iface, ifnum) }}
 {% elif iftype == 'Ethernet' and settings.profile == 'underlay' %}
