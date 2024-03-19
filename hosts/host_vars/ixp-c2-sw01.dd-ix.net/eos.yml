@@ -78,6 +78,21 @@ interfaces:
       profile: peer
     39:
       profile: peer
+    43:
+      profile: lacp
+      options:
+        description: IXP ixp-rs02
+        channel_group: 43
+    44:
+      profile: lacp
+      options:
+        description: IXP ixp-rs02
+        channel_group: 43
+    45:
+      profile: oobm
+      options:
+        description: OOBM ixp-rs02 iLO
+        vlan: 602
   Loopback:
     0:
       profile: underlay

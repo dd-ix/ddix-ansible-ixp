@@ -4,6 +4,10 @@
 {{ iface_cfg_ethernet_peer(iface, ifnum) }}
 {% elif iftype == 'Ethernet' and settings.profile == 'underlay' %}
 {{ iface_cfg_ethernet_underlay(iface, settings.options) }}
+{% elif iftype == 'Ethernet' and settings.profile == 'oobm' %}
+{{ iface_cfg_ethernet_oobm(iface, settings.options) }}
+{% elif iftype == 'Ethernet' and settings.profile == 'lacp' %}
+{{ iface_cfg_ethernet_lacp(iface, settings.options) }}
 {% elif iftype == 'Ethernet' and settings.profile == 'unused' %}
 {{ iface_cfg_ethernet_unused(iface, settings.options) }}
 {% elif iftype == 'Loopback' and settings.profile == 'underlay' %}
@@ -94,6 +98,19 @@ interface {{ iface }}
    ipv6 address {{ opts.lladdr }} link-local
    ipv6 nd ra disabled
    isis enable backbone
+{%- endmacro -%}
+
+{% macro iface_cfg_ethernet_oobm(iface, opts) -%}
+interface {{ iface }}
+   description {{ opts.description }}
+   switchport access vlan {{ opts.vlan }}
+{%- endmacro -%}
+
+{% macro iface_cfg_ethernet_lacp(iface, opts) -%}
+interface {{ iface }}
+   description {{ opts.description }}
+   channel-group {{ opts.channel_group }} mode active
+   lacp timer fast
 {%- endmacro -%}
 
 {% macro iface_cfg_ethernet_unused(iface, opts) -%}
