@@ -20,7 +20,7 @@ vlan 666
 {% block interfaces %}
 interface Port-Channel43
    description L2T ixp-rs01
-   switchport trunk allowed vlan 600,601
+   switchport trunk allowed vlan 600-601
    switchport mode trunk
 !
 {# vxlan: need to do recirculation #}
