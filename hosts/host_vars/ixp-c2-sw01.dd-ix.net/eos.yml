@@ -7,14 +7,14 @@ interfaces:
     1:
       profile: underlay
       options:
-        description: RP
+        description: ISL ixp-cc-sw01 Eth1
         ipv4: 10.81.0.2/24
         ipv6: 2a01:7700:80b0:5100::2/64
         lladdr: fe80::2/64
     2:
       profile: underlay
       options:
-        description: RP
+        description: ISL ixp-cc-sw01 Eth2
         ipv4: 10.81.1.2/24
         ipv6: 2a01:7700:80b0:5101::2/64
         lladdr: fe80::2/64
@@ -91,8 +91,15 @@ interfaces:
     45:
       profile: oobm
       options:
-        description: OOBM ixp-rs02 iLO
+        description: OOBM ixp-rs02
         vlan: 602
+    46:
+      profile: routed
+      options:
+        description: RP IXP-Mgmt-FW
+        vrf: inband-mgmt
+        ipv6: 2a01:7700:80b0:4100::2/64
+        lladdr: fe80::2/64
   Loopback:
     0:
       profile: underlay

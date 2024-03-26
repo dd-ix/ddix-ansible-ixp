@@ -19,7 +19,7 @@ vlan 666
 
 {% block interfaces %}
 interface Port-Channel43
-   description L2T ixp-rs02
+   description IXP ixp-rs02
    switchport trunk allowed vlan 600,602
    switchport mode trunk
 !
@@ -61,6 +61,20 @@ interface UnconnectedEthernet{{ ifnum }}
    description REC UNUSED
    shutdown
 {% endfor %}
+!
+interface Vlan602
+   description SVI IXP-Mgmt-C2
+   vrf inband-mgmt
+   ipv6 enable
+   ipv6 address 2a01:7700:80b0:4002::1/64
+   ipv6 address fe80::1/64 link-local
+!
+interface Vxlan1
+   description VTEP
+   vxlan source-interface Loopback1
+   vxlan udp-port 4789
+   vxlan vlan 600 vni 20600
+   vxlan vrf inband-mgmt vni 30001
 !
 {% endblock %}
 
