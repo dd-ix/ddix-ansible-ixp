@@ -3,6 +3,7 @@
 {{ ansible_managed|comment(decoration="! ") }}
 !
 aaa root ssh-key {{ secrets.eos.root_pubkey }}
+aaa root ssh-key secondary {{ secrets.eos.root_pubkey_2nd }}
 aaa authentication policy local allow-nopassword-remote-login
 !
 username admin role network-admin secret sha512 {{ secrets.eos.admin_hash }}
