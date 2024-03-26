@@ -24,7 +24,7 @@ pkgs.writeShellApplication {
   runtimeInputs = with pkgs; [
     arouteserver
     bgpq4
-    ssh
+    openssh
   ];
 
   text = ''
