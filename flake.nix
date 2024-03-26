@@ -29,10 +29,5 @@
       overlays.default = _: prev: {
         ddix-ansible-ixp = self.packages."${prev.system}".default;
       };
-
-      nixosModules = rec {
-        ddix-ansible-ixp = import ./module.nix;
-        default = ddix-ansible-ixp;
-      };
     };
 }

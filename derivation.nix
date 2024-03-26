@@ -24,11 +24,12 @@ pkgs.writeShellApplication {
   runtimeInputs = with pkgs; [
     arouteserver
     bgpq4
+    ssh
   ];
 
   text = ''
     export PYTHONPATH="${python3}/${python3.sitePackages}"
     cd ${ddix-ansible-ixp}/plays
-    exec ${pkgs.ansible}/bin/ansible-playbook ixp.yml "''$@" 
+    exec ${pkgs.util-linux}/bin/flock /tmp/ddix-ansible-ixp.lock -c ${pkgs.ansible}/bin/ansible-playbook ixp.yml "''$@" 
   '';
 }
