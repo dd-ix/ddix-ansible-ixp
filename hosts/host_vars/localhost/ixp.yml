@@ -6,4 +6,4 @@ secrets_masked:
     deploy_hash: "{MASKED}"
     snmp_community: "{MASKED}"
     radius_key: "{MASKED}"
-    root_pubkey: "{MASKED}"
+    deploy_pubkey: "{MASKED}"
