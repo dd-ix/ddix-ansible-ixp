@@ -1,12 +1,3 @@
-
-- name: configure authorized_keys
-  ansible.builtin.authorized_key:
-    user: root
-    key: "{{ hostvars.localhost.secrets.eos.root_pubkeys|join(\"\n\") }}"
-    exclusive: yes
-    manage_dir: no
-    path: /mnt/flash/ddix-pubkeys
-
 - name: upload config file
   ansible.builtin.copy:
     src: "{{ hostvars.localhost.arouteserver_workdir }}/eos/{{ inventory_hostname }}.conf"

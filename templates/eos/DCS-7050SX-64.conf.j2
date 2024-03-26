@@ -2,12 +2,12 @@
 !
 {{ ansible_managed|comment(decoration="! ") }}
 !
-aaa root ssh-key file flash:ddix-pubkeys
+aaa root ssh-key {{ secrets.eos.root_pubkey }}
 aaa authentication policy local allow-nopassword-remote-login
 !
 username admin role network-admin secret sha512 {{ secrets.eos.admin_hash }}
 username ddix-deploy role network-admin secret sha512 {{ secrets.eos.deploy_hash }}
-username ddix-deploy ssh-key {{ secrets.eos.deploy_pubkey }}
+username ddix-deploy ssh-key {{ secrets.eos.root_pubkey }}
 !
 service interface unconnected expose
 !
