@@ -89,7 +89,6 @@ router bgp 65044
    neighbor backbone remote-as 65044
    neighbor backbone update-source Loopback0
    neighbor backbone send-community
-   neighbor backone peer group
 {% for eos in groups.eos|difference(switch_vars.inventory_hostname) %}
    neighbor {{ hostvars[eos].router_id }} peer group backbone
 {% endfor %}
