@@ -62,6 +62,8 @@ cfg:
       enabled: true
     reject_policy:
       policy: tag_and_reject
+  rfc8950: true
+  add_path: true
   graceful_shutdown:
     enabled: true
   rfc1997_wellknown_communities:
