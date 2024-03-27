@@ -1,0 +1,6 @@
+- name: replace running config
+  arista.eos.eos_command:
+    commands:
+      - reload in 00:05 force reason ddix-deploy
+      - configure replace flash:ddix-config
+      - reload cancel

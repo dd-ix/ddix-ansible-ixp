@@ -1,0 +1,5 @@
+- name: run bird config check
+  ansible.builtin.command: birdc -v configure check
+
+- name: reload bird config
+  ansible.builtin.command: birdc -v configure

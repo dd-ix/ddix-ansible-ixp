@@ -27,6 +27,7 @@
     - eos_build
     - eos
 
+
 - name: push sflow config
   hosts: sflow
   roles:
@@ -60,4 +61,32 @@
   tags:
     - push
     - eos_push
+    - eos
+
+
+- name: reload bird
+  hosts: bird
+  serial: 1
+  any_errors_fatal: true
+  roles:
+    - role: bird_reload
+      when: engage_config|default(False)
+  tags:
+    - engage
+    - bird_engage
+    - bird
+
+- name: enable eos config
+  hosts: eos
+  connection: network_cli
+  become: true
+  become_method: enable
+  serial: 1
+  any_errors_fatal: true
+  roles:
+    - role: eos_configure
+      when: engage_config|default(False)
+  tags:
+    - engage
+    - eos_engage
     - eos
