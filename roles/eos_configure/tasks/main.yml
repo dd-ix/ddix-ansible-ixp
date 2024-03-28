@@ -13,8 +13,7 @@
 - name: test for pending changes
   ansible.utils.fact_diff:
     before: '{{ running_config.stdout_lines[0]|reject("match", "^(!|$)") }}'
-    after: '{{ deployed_config.stdout_lines[0]|reject("match", "^(!|\s*$)") }}'
-    #[:-1]
+    after: '{{ deployed_config.stdout_lines[0][:-1]|reject("match", "^(!|\s*$)") }}'
   register: config_diff
 
 - name: replace running config
@@ -24,5 +23,6 @@
       - configure replace flash:ddix-config
       - reload cancel
   when: config_diff.changed
+  register: configure
   changed_when: true
   notify: notify about eos changes
