@@ -1,6 +1,28 @@
+- name: retrieve current config
+  arista.eos.eos_command:
+    commands:
+      - show running-config
+  register: running_config
+
+- name: retrieve deployed config
+  arista.eos.eos_command:
+    commands:
+      - "copy flash:ddix-config terminal:"
+  register: deployed_config
+
+- name: test for pending changes
+  ansible.utils.fact_diff:
+    before: '{{ running_config.stdout_lines[0]|reject("match", "^(!|$)") }}'
+    after: '{{ deployed_config.stdout_lines[0]|reject("match", "^(!|\s*$)") }}'
+    #[:-1]
+  register: config_diff
+
 - name: replace running config
   arista.eos.eos_command:
     commands:
       - reload in 00:05 force reason ddix-deploy
       - configure replace flash:ddix-config
       - reload cancel
+  when: config_diff.changed
+  changed_when: true
+  notify: notify about eos changes

@@ -1,0 +1,21 @@
+- name: notify about eos changes
+  ansible.builtin.uri:
+    url: "{{ secrets.matrix_url }}"
+    method: POST
+    body_format: json
+    body:
+      msgtype: m.text
+      format: org.matrix.custom.html
+      body: |
+        **EOS Update {{ inventory_hostname_short }}**
+
+        Config diff:
+          {{ config_diff.diff_text|indent(2) }}
+      formatted_body: |
+        <h1>EOS Update <code>{{ inventory_hostname_short }}</code></h1>
+        <p>Config diff:</p>
+        <pre>{{ config_diff.diff_text|indent(2) }}</pre>
+    follow_redirects: no
+  delegate_to: localhost
+  register: foo
+  when: secrets.matrix_url is defined

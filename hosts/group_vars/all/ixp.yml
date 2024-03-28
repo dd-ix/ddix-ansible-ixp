@@ -7,3 +7,4 @@ secrets_masked:
     snmp_community: "{MASKED}"
     radius_key: "{MASKED}"
     root_pubkey: "{MASKED}"
+    root_pubkey_2nd: "{MASKED}"
