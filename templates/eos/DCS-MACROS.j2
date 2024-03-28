@@ -25,11 +25,11 @@
    description FREE UNASSIGNED
    shutdown
    mac access-group block in
+   no lldp transmit
+   no lldp receive
    storm-control broadcast level 0.01
    storm-control multicast level 0.01
    storm-control unknown-unicast level 0.01
-   no lldp transmit
-   no lldp receive
 {%- endmacro -%}
 
 {% macro iface_cfg_ethernet_peer_peering(ifnum, status, peer) %}
