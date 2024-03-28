@@ -1,0 +1,29 @@
+- name: notify about bird changes
+  ansible.builtin.uri:
+    url: "{{ secrets.matrix_url }}"
+    method: POST
+    body_format: json
+    body:
+      msgtype: m.text
+      format: org.matrix.custom.html
+      body: |
+        ✅ **Bird Update {{ inventory_hostname_short }}**
+
+        Changes:
+          {{ config_diff.stdout|indent(2) }}
+
+        Reconfigure:
+          {{ configure.stdout|indent(2) }}
+      formatted_body: |
+        <h1>✅ Bird Update <code>{{ inventory_hostname_short }}</code></h1>
+        <ul>
+          <li>Changes:
+            <pre>{{ config_diff.stdout|e }}</pre>
+          </li>
+          <li>Reconfigure:
+            <pre>{{ configure.stdout|e }}</pre>
+        </ul>
+    follow_redirects: no
+  delegate_to: localhost
+  register: foo
+  when: secrets.matrix_url is defined

@@ -1,5 +1,64 @@
-- name: run bird config check
-  ansible.builtin.command: birdc -v configure check
+- name: reconfigure bird
+  block:
+    - name: retrieve config file stat
+      ansible.builtin.stat:
+        path: /etc/bird/bird.conf.ddix
+      register: config_file
 
-- name: reload bird config
-  ansible.builtin.command: birdc -v configure
+    - name: get bird status
+      ansible.builtin.command: birdc -v show status
+      register: bird_status
+      changed_when: false
+
+    - name: get last reconfigure timestamp
+      ansible.builtin.set_fact:
+        last_reconfigure: '{{ (bird_status.stdout|regex_search("^\s+Last reconfiguration on (20.+)$", "\1", multiline=true)|first|to_datetime).strftime("%s") }}'
+
+    - name: run bird config check
+      ansible.builtin.command: birdc -v configure check '"/etc/bird/bird.conf.ddix"'
+      changed_when: false
+
+    - name: get config diff
+      ansible.builtin.command: diff -u /etc/bird/bird.conf /etc/bird/bird.conf.ddix
+      register: config_diff
+      changed_when: config_diff.rc == 1
+      failed_when: config_diff.rc not in [0, 1]
+
+    - name: reload bird config
+      ansible.builtin.command: birdc -v configure '"/etc/bird/bird.conf.ddix"'
+      register: configure
+      notify: notify about bird changes
+      when: config_file.stat.mtime >= last_reconfigure|int or config_diff.rc == 1
+
+    - name: copy transient config
+      ansible.builtin.copy:
+        src: /etc/bird/bird.conf.ddix
+        dest: /etc/bird/bird.conf
+        remote_src: true
+  rescue:
+    - name: notify about bird failure
+      ansible.builtin.uri:
+        url: "{{ secrets.matrix_url }}"
+        method: POST
+        body_format: json
+        body:
+          msgtype: m.message
+          format: org.matrix.custom.html
+          body: |
+            ❌ **Bird Failure {{ inventory_hostname_short }}**
+
+            Error while {{ ansible_failed_task.name }}:
+              {{ ansible_failed_result.msg|indent(2) }}
+          formatted_body: |
+            <h1>❌ Bird Failure <code>{{ inventory_hostname_short }}</code></h1>
+            <ul>
+              <li>Error while {{ ansible_failed_task.name }}:
+                <pre>{{ ansible_failed_result.msg|e }}</pre>
+              </li>
+            </ul>
+        follow_redirects: no
+      delegate_to: localhost
+      when: secrets.matrix_url is defined
+
+    - name: fail on error
+      ansible.builtin.fail:

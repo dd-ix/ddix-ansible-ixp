@@ -6,7 +6,7 @@
 - name: push bird.conf
   ansible.builtin.copy:
     src: "{{ hostvars.localhost.arouteserver_workdir }}/dist/bird-{{ bird_router_id }}.conf"
-    dest: /etc/bird/bird.conf
+    dest: /etc/bird/bird.conf.ddix
     owner: ddix-deploy
     group: bird
     mode: 0640
