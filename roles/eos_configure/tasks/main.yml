@@ -3,7 +3,7 @@
     - name: retrieve current config
       arista.eos.eos_command:
         commands:
-          - show runnisng-config
+          - show running-config
       register: running_config
 
     - name: retrieve deployed config
