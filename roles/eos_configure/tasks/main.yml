@@ -50,6 +50,7 @@
               </li>
             </ul>
         follow_redirects: no
+      delegate_to: localhost
       when: secrets.matrix_url is defined
 
     - name: fail on error
