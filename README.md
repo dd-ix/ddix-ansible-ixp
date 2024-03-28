@@ -4,8 +4,8 @@
 
 This deployment builds the configurations for:
 - DD-IX IXP Switches (Arista EOS)
-- DD-IX Route Server BGP Config (Bird)
-- DD-IX SFlow Exporter (sflow-exporter)
+- DD-IX Route Server BGP Config ([Bird](https://bird.network.cz/))
+- DD-IX SFlow Exporter ([sflow_exporter](https://github.com/dd-ix/sflow_exporter))
 
 The configs are based on:
 - a custome [SQL view](ixp-manager_peers.sql) from the database of the DD-IX IXP-Manager instance
@@ -23,10 +23,12 @@ The configs are based on:
 bird:
 - bird_build
 - bird_push
+- bird_engage
 
 eos:
 - eos_build
 - eos_push
+- eos_engage
 
 sflow:
 - sflow_build
