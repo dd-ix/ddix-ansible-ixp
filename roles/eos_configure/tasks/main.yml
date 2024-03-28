@@ -1,28 +1,56 @@
-- name: retrieve current config
-  arista.eos.eos_command:
-    commands:
-      - show running-config
-  register: running_config
+- name: reconfigure eos
+  block:
+    - name: retrieve current config
+      arista.eos.eos_command:
+        commands:
+          - show runnisng-config
+      register: running_config
 
-- name: retrieve deployed config
-  arista.eos.eos_command:
-    commands:
-      - "copy flash:ddix-config terminal:"
-  register: deployed_config
+    - name: retrieve deployed config
+      arista.eos.eos_command:
+        commands:
+          - "copy flash:ddix-config terminal:"
+      register: deployed_config
 
-- name: test for pending changes
-  ansible.utils.fact_diff:
-    before: '{{ running_config.stdout_lines[0]|reject("match", "^(!|$)") }}'
-    after: '{{ deployed_config.stdout_lines[0][:-1]|reject("match", "^(!|\s*$)") }}'
-  register: config_diff
+    - name: test for pending changes
+      ansible.utils.fact_diff:
+        before: '{{ running_config.stdout_lines[0]|reject("match", "^(!|$)") }}'
+        after: '{{ deployed_config.stdout_lines[0][:-1]|reject("match", "^(!|\s*$)") }}'
+      register: config_diff
 
-- name: replace running config
-  arista.eos.eos_command:
-    commands:
-      - reload in 00:05 force reason ddix-deploy
-      - configure replace flash:ddix-config
-      - reload cancel
-  when: config_diff.changed
-  register: configure
-  changed_when: true
-  notify: notify about eos changes
+    - name: replace running config
+      arista.eos.eos_command:
+        commands:
+          - reload in 00:05 force reason ddix-deploy
+          - configure replace flash:ddix-config
+          - reload cancel
+      when: config_diff.changed
+      register: configure
+      changed_when: true
+      notify: notify about eos changes
+  rescue:
+    - name: notify about eos failure
+      ansible.builtin.uri:
+        url: "{{ secrets.matrix_url }}"
+        method: POST
+        body_format: json
+        body:
+          msgtype: m.message
+          format: org.matrix.custom.html
+          body: |
+            ❌ **EOS Failure {{ inventory_hostname_short }}**
+
+            Error while {{ ansible_failed_task.name }}:
+              {{ ansible_failed_result.msg|indent(2) }}
+          formatted_body: |
+            <h1>❌ EOS Failure <code>{{ inventory_hostname_short }}</code></h1>
+            <ul>
+              <li>Error while {{ ansible_failed_task.name }}:
+                <pre>{{ ansible_failed_result.msg|e }}</pre>
+              </li>
+            </ul>
+        follow_redirects: no
+      when: secrets.matrix_url is defined
+
+    - name: fail on error
+      ansible.builtin.fail:
