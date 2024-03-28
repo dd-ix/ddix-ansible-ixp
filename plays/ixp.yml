@@ -86,6 +86,8 @@
   roles:
     - role: eos_configure
       when: engage_config|default(False)
+  vars:
+    ansible_network_os: "{{ engage_network_os }}"
   tags:
     - engage
     - eos_engage
