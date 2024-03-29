@@ -1,0 +1,22 @@
+- name: notify about lbu commit
+  ansible.builtin.uri:
+    url: "{{ secrets.matrix.surveillance_room_url }}"
+    method: POST
+    body_format: json
+    body:
+      msgtype: m.text
+      format: org.matrix.custom.html
+      body: |
+        ✅ **Config saved at {{ inventory_hostname_short }}**
+
+        Changes:
+          {{ lbu_status.stdout|indent(2) }}
+      formatted_body: |
+        <h1>✅ Config saved at <code>{{ inventory_hostname_short }}</code></h1>
+        <ul>
+          <li>Changes:
+            <pre>{{ lbu_status.stdout|e }}</pre>
+          </li>
+    follow_redirects: no
+  delegate_to: localhost
+  when: secrets.matrix.surveillance_room_url is defined

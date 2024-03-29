@@ -1,0 +1,71 @@
+- name: retrieve lbu status
+  ansible.builtin.command: doas /sbin/lbu status
+  changed_when: no
+  check_mode: no
+  register: lbu_status
+
+- name: handle pending changes
+  block:
+    - name: ensure that no other changes are pending
+      ansible.builtin.assert:
+        that: lbu_status.stdout_lines|reject('match', '^[AU] etc/bird/bird.conf(.ddix)?')|length == 0
+  rescue:
+    - ansible.builtin.set_fact:
+        external_changes: "{{ lbu_status.stdout_lines|reject('match', '^[AU] etc/bird/bird.conf(.ddix)?')|join(\"\n\") }}"
+
+    - name: notify about other chainges
+      ansible.builtin.uri:
+        url: "{{ secrets.matrix.alerts_room_url }}"
+        method: POST
+        body_format: json
+        body:
+          msgtype: m.message
+          format: org.matrix.custom.html
+          body: |
+            📢 **External changes at {{ inventory_hostname_short }}**
+
+            Will not save due to external changes:
+              {{ external_changes|indent(2) }}
+          formatted_body: |
+            <h1>📢 External changes at <code>{{ inventory_hostname_short }}</code></h1>
+            <ul>
+              <li>Will not save due to external changes:
+                <pre>{{ external_changes|e }}</pre>
+              </li>
+            </ul>
+        follow_redirects: no
+      delegate_to: localhost
+
+    - name: stop on error
+      ansible.builtin.fail:
+
+- name: save pending changes
+  block:
+    - name: run lbu commit
+      ansible.builtin.command: doas /sbin/lbu commit
+      notify: notify about lbu commit
+      when: lbu_status.stdout_lines|length > 0
+  rescue:
+    - name: notify about lbu failure
+      ansible.builtin.uri:
+        url: "{{ secrets.matrix.alerts_room_url }}"
+        method: POST
+        body_format: json
+        body:
+          msgtype: m.message
+          format: org.matrix.custom.html
+          body: |
+            ❌ **lbu error {{ inventory_hostname_short }}**
+
+            Error while {{ ansible_failed_task.name }}:
+              {{ ansible_failed_result.msg|indent(2) }}
+          formatted_body: |
+            <h1>❌ lbu error <code>{{ inventory_hostname_short }}</code></h1>
+            <ul>
+              <li>Error while {{ ansible_failed_task.name }}:
+                <pre>{{ ansible_failed_result.msg|e }}</pre>
+              </li>
+            </ul>
+        follow_redirects: no
+      delegate_to: localhost
+      when: secrets.matrix.alerts_room_url is defined

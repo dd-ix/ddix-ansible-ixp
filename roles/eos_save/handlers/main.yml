@@ -1,0 +1,23 @@
+- name: notify about eos save
+  ansible.builtin.uri:
+    url: "{{ secrets.matrix.surveillance_room_url }}"
+    method: POST
+    body_format: json
+    body:
+      msgtype: m.text
+      format: org.matrix.custom.html
+      body: |
+        ✅ **Config saved at {{ inventory_hostname_short }}**
+
+        Changes:
+          {{ config_diff.diff_text|indent(2) }}
+      formatted_body: |
+        <h1>✅ Config saved at <code>{{ inventory_hostname_short }}</code></h1>
+        <ul>
+          <li>Changes:
+            <pre>{{ config_diff.diff_text|e }}</pre>
+          </li>
+        </ul>
+    follow_redirects: no
+  delegate_to: localhost
+  when: secrets.matrix.surveillance_room_url is defined
