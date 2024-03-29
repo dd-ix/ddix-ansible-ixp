@@ -11,6 +11,7 @@
         commands:
           - "copy flash:ddix-config terminal:"
       register: deployed_config
+      check_mode: no
 
     - name: test for pending changes
       ansible.utils.fact_diff:
