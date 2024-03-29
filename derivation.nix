@@ -19,22 +19,22 @@ let
   };
 in
 {
-  pkgs.writeShellApplication {
-  name = "ddix-ixp-deploy";
+  ddix-ixp-deploy = pkgs.writeShellApplication {
+    name = "ddix-ixp-deploy";
 
-  runtimeInputs = with pkgs; [
-    arouteserver
-    bgpq4
-    openssh
-  ];
+    runtimeInputs = with pkgs; [
+      arouteserver
+      bgpq4
+      openssh
+    ];
 
-  text = ''
-    export PYTHONPATH="${python3}/${python3.sitePackages}"
-    cd ${ddix-ansible-ixp}/plays
-    exec ${pkgs.util-linux}/bin/flock /tmp/ddix-ansible-ixp.lock -c "${pkgs.ansible}/bin/ansible-playbook deploy.yml ''$*" 
-  '';
+    text = ''
+      export PYTHONPATH="${python3}/${python3.sitePackages}"
+      cd ${ddix-ansible-ixp}/plays
+      exec ${pkgs.util-linux}/bin/flock /tmp/ddix-ansible-ixp.lock -c "${pkgs.ansible}/bin/ansible-playbook deploy.yml ''$*" 
+    '';
   };
-  pkgs.writeShellApplication {
+  ddix-ixp-commit = pkgs.writeShellApplication {
     name = "ddix-ixp-commit";
 
     runtimeInputs = with pkgs; [

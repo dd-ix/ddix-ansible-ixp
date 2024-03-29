@@ -13,21 +13,20 @@
     flake-utils.lib.eachDefaultSystem
       (system:
         let
-          pkgs = (import nixpkgs) {
-            inherit system;
+          pkgs = (import nixpkgs) { inherit system; };
+          derivation = pkgs.callPackage ./derivation.nix {
+            arouteserver = arouteserver.packages."${system}".arouteserver;
           };
         in
         {
-          packages = rec {
-            ddix-ansible-ixp = pkgs.callPackage ./derivation.nix {
-              arouteserver = arouteserver.packages."${system}".arouteserver;
-            };
-            default = ddix-ansible-ixp;
+          packages = {
+            inherit (derivation) ddix-ixp-deploy ddix-ixp-commit;
           };
         }
       ) // {
       overlays.default = _: prev: {
-        ddix-ansible-ixp = self.packages."${prev.system}".default;
+        ddix-ixp-deploy = self.packages."${prev.system}".ddix-ixp-deploy;
+        ddix-ixp-commit = self.packages."${prev.system}".ddix-ixp-commit;
       };
     };
 }
