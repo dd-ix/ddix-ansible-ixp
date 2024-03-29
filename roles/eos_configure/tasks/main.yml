@@ -19,16 +19,23 @@
         after: '{{ deployed_config.stdout_lines[0][:-1]|reject("match", "^(!|\s*$)") }}'
       register: config_diff
 
-    - name: replace running config
-      arista.eos.eos_command:
-        commands:
-          - reload in 00:05 force reason ddix-deploy
-          - configure replace flash:ddix-config
-          - reload cancel
-      when: config_diff.changed
-      register: configure
-      changed_when: true
-      notify: notify about eos changes
+    - name: reconfigure
+      block:
+      - name: replace running config
+        arista.eos.eos_command:
+          commands:
+            - reload in 00:05 force reason ddix-deploy
+            - configure replace flash:ddix-config
+        when: config_diff.changed
+        register: configure
+        changed_when: true
+        notify: notify about eos changes
+      always:
+        - name: cancel reload timer
+          arista.eos.eos_command:
+            commands:
+              - reload cancel
+          when: config_diff.changed
   rescue:
     - name: notify about eos failure
       ansible.builtin.uri:
@@ -54,5 +61,5 @@
       delegate_to: localhost
       when: secrets.matrix.alerts_room_url is defined
 
-    - name: fail on error
+    - name: stop on error
       ansible.builtin.fail:
