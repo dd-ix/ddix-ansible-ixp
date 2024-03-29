@@ -8,6 +8,7 @@
     - name: get bird status
       ansible.builtin.command: birdc -v show status
       register: bird_status
+      check_mode: no
       changed_when: false
 
     - name: get last reconfigure timestamp
@@ -16,13 +17,19 @@
 
     - name: run bird config check
       ansible.builtin.command: birdc -v configure check '"/etc/bird/bird.conf.ddix"'
+      check_mode: no
       changed_when: false
 
     - name: get config diff
       ansible.builtin.command: diff -u /etc/bird/bird.conf /etc/bird/bird.conf.ddix
+      check_mode: no
       register: config_diff
       changed_when: config_diff.rc == 1
       failed_when: config_diff.rc not in [0, 1]
+
+    - name: build short config diff
+      ansible.builtin.set_fact:
+        config_diff_short: "{{ config_diff.stdout_lines|reject(\"match\", \"^.\\s+route \\S+ max \\d+ as \\d+;$\")}}"
 
     - name: reload bird config
       ansible.builtin.command: birdc -v configure '"/etc/bird/bird.conf.ddix"'
