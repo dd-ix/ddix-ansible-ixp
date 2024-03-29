@@ -19,7 +19,7 @@
         method: POST
         body_format: json
         body:
-          msgtype: m.message
+          msgtype: m.text
           format: org.matrix.custom.html
           body: |
             📢 **External changes at {{ inventory_hostname_short }}**
@@ -52,7 +52,7 @@
         method: POST
         body_format: json
         body:
-          msgtype: m.message
+          msgtype: m.text
           format: org.matrix.custom.html
           body: |
             ❌ **lbu error {{ inventory_hostname_short }}**
