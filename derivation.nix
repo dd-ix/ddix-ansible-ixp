@@ -19,7 +19,7 @@ let
   };
 in
 pkgs.writeShellApplication {
-  name = "ddix-ansible-ixp";
+  name = "ddix-ixp-deploy";
 
   runtimeInputs = with pkgs; [
     arouteserver
@@ -30,6 +30,19 @@ pkgs.writeShellApplication {
   text = ''
     export PYTHONPATH="${python3}/${python3.sitePackages}"
     cd ${ddix-ansible-ixp}/plays
-    exec ${pkgs.util-linux}/bin/flock /tmp/ddix-ansible-ixp.lock -c "${pkgs.ansible}/bin/ansible-playbook ixp.yml ''$*" 
+    exec ${pkgs.util-linux}/bin/flock /tmp/ddix-ansible-ixp.lock -c "${pkgs.ansible}/bin/ansible-playbook deploy.yml ''$*" 
+  '';
+}
+pkgs.writeShellApplication {
+  name = "ddix-ixp-commit";
+
+  runtimeInputs = with pkgs; [
+    openssh
+  ];
+
+  text = ''
+    export PYTHONPATH="${python3}/${python3.sitePackages}"
+    cd ${ddix-ansible-ixp}/plays
+    exec ${pkgs.util-linux}/bin/flock /tmp/ddix-ansible-ixp.lock -c "${pkgs.ansible}/bin/ansible-playbook commit.yml ''$*" 
   '';
 }
