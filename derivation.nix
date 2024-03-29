@@ -18,7 +18,8 @@ let
     '';
   };
 in
-pkgs.writeShellApplication {
+{
+  pkgs.writeShellApplication {
   name = "ddix-ixp-deploy";
 
   runtimeInputs = with pkgs; [
@@ -32,17 +33,18 @@ pkgs.writeShellApplication {
     cd ${ddix-ansible-ixp}/plays
     exec ${pkgs.util-linux}/bin/flock /tmp/ddix-ansible-ixp.lock -c "${pkgs.ansible}/bin/ansible-playbook deploy.yml ''$*" 
   '';
-}
-pkgs.writeShellApplication {
-  name = "ddix-ixp-commit";
+  };
+  pkgs.writeShellApplication {
+    name = "ddix-ixp-commit";
 
-  runtimeInputs = with pkgs; [
-    openssh
-  ];
+    runtimeInputs = with pkgs; [
+      openssh
+    ];
 
-  text = ''
-    export PYTHONPATH="${python3}/${python3.sitePackages}"
-    cd ${ddix-ansible-ixp}/plays
-    exec ${pkgs.util-linux}/bin/flock /tmp/ddix-ansible-ixp.lock -c "${pkgs.ansible}/bin/ansible-playbook commit.yml ''$*" 
-  '';
+    text = ''
+      export PYTHONPATH="${python3}/${python3.sitePackages}"
+      cd ${ddix-ansible-ixp}/plays
+      exec ${pkgs.util-linux}/bin/flock /tmp/ddix-ansible-ixp.lock -c "${pkgs.ansible}/bin/ansible-playbook commit.yml ''$*" 
+    '';
+  };
 }
