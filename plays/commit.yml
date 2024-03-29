@@ -1,0 +1,20 @@
+#!/usr/bin/env ansible-playbook
+
+- name: commit bird changes
+  hosts: bird
+  roles:
+    - role: bird_commit
+  tags:
+    - bird
+
+- name: save eos config
+  hosts: eos
+  connection: network_cli
+  become: true
+  become_method: enable
+  roles:
+    - role: eos_save
+  vars:
+    ansible_network_os: "{{ engage_network_os }}"
+  tags:
+    - eos
