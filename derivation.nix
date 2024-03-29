@@ -4,8 +4,8 @@ let
   ansible-general = pkgs.fetchFromGitHub {
     owner = "ansible-collections";
     repo = "community.general";
-    rev = "8.3.0";
-    hash = "sha256-Cv9Whp7JEVtkZ33PlkC2+kqkFMvaZq0zAeXqS/48cgY=";
+    rev = "8.5.0";
+    hash = "sha256-LAGu+LbGH8jvMmGO9NoTL5UKAxDd85vNDrCQQEVMQ0M=";
   };
   ddix-ansible-ixp = pkgs.stdenv.mkDerivation {
     name = "libfoo-1.2.3";
