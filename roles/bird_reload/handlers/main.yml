@@ -1,6 +1,6 @@
 - name: notify about bird changes
   ansible.builtin.uri:
-    url: "{{ secrets.matrix_url }}"
+    url: "{{ secrets.matrix.surveillance_room_url }}"
     method: POST
     body_format: json
     body:
@@ -25,5 +25,4 @@
         </ul>
     follow_redirects: no
   delegate_to: localhost
-  register: foo
-  when: secrets.matrix_url is defined
+  when: secrets.matrix.surveillance_room_url is defined
