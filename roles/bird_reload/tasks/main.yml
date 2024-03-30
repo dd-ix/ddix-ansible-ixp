@@ -29,7 +29,7 @@
 
     - name: build short config diff
       ansible.builtin.set_fact:
-        config_diff_short: "{{ config_diff.stdout_lines|reject(\"match\", \"^.\\s+route \\S+ max \\d+ as \\d+;$\")}}"
+        config_diff_short: "{{ config_diff.stdout_lines|reject(\"match\", \"^.\\s+route \\S+ max \\d+ as \\d+;$\")|join(\"\n\")}}"
 
     - name: reload bird config
       ansible.builtin.command: birdc -v configure '"/etc/bird/bird.conf.ddix"'
