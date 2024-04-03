@@ -27,9 +27,20 @@
       changed_when: config_diff.rc == 1
       failed_when: config_diff.rc not in [0, 1]
 
+    - name: slurp bird configs
+      ansible.builtin.slurp:
+        src: "{{ item }}"
+      loop:
+        - /etc/bird/bird.conf
+        - /etc/bird/bird.conf.ddix
+      check_mode: no
+      register: config_slurp
+
     - name: build short config diff
-      ansible.builtin.set_fact:
-        config_diff_short: "{{ config_diff.stdout_lines|reject(\"match\", \"^.\\s+route \\S+ max \\d+ as \\d+;$\")|join(\"\n\")}}"
+      ansible.utils.fact_diff:
+        before: "{{ config_slurp.results[0].content|b64decode|split(\"\n\")|reject(\"match\", \"^\\s+route \\S+ max \\d+ as \\d+;$\")|join(\"\n\")}}"
+        after: "{{ config_slurp.results[1].content|b64decode|split(\"\n\")|reject(\"match\", \"^\\s+route \\S+ max \\d+ as \\d+;$\")|join(\"\n\")}}"
+      register: config_diff_short
 
     - name: reload bird config
       ansible.builtin.command: birdc -v configure '"/etc/bird/bird.conf.ddix"'
