@@ -11,3 +11,12 @@
     group: bird
     mode: 0640
     validate: /usr/sbin/bird -p -c %s
+
+- name: publish bird.html
+  ansible.builtin.copy:
+    src: "{{ hostvars.localhost.arouteserver_workdir }}/dist/bird-{{ bird_router_id }}.html"
+    dest: "{{ bird_publish_html }}"
+  delegate_to: svc-web01.dd-ix.net
+  when: bird_publish_html is defined
+  ignore_errors: true
+  ignore_unreachable: true

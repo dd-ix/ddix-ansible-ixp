@@ -1,1 +1,2 @@
 bird_router_id: 193.201.151.65
+bird_publish_html: /var/lib/website-content-api/bird.html
