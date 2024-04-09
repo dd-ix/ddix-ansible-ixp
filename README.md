@@ -33,3 +33,8 @@ eos:
 sflow:
 - sflow_build
 - sflow_push
+
+## Updating arouteserver
+
+1. `nix flake update`
+2. `arouteserver setup-templates --cfg arouteserver/arouteserver.yml  --cache-dir ...`
