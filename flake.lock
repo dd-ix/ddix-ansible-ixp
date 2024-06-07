@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1711526842,
-        "narHash": "sha256-NWqMgay69hb3l2+VThDrKtYc8BnTTDLJz4z7bmR5Wrw=",
+        "lastModified": 1717807235,
+        "narHash": "sha256-Uo+kF/6e6Doja5uan7kj+VIsQd3lNpg0xuYCEVmhmNA=",
         "owner": "dd-ix",
         "repo": "arouteserver.nix",
-        "rev": "4fe57fdef8f9e824a9fde5fa221333b67144fc45",
+        "rev": "8e6dbd6069e1de6e3ca8ce82d79ada94c860fede",
         "type": "github"
       },
       "original": {
@@ -59,16 +59,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1711124224,
-        "narHash": "sha256-l0zlN/3CiodvWDtfBOVxeTwYSRz93muVbXWSpaMjXxM=",
+        "lastModified": 1717696253,
+        "narHash": "sha256-1+ua0ggXlYYPLTmMl3YeYYsBXDSCqT+Gw3u6l4gvMhA=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "56528ee42526794d413d6f244648aaee4a7b56c0",
+        "rev": "9b5328b7f761a7bbdc0e332ac4cf076a3eedb89b",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-23.11",
+        "ref": "nixos-24.05",
         "repo": "nixpkgs",
         "type": "github"
       }

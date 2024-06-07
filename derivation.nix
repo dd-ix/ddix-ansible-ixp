@@ -4,11 +4,11 @@ let
   ansible-general = pkgs.fetchFromGitHub {
     owner = "ansible-collections";
     repo = "community.general";
-    rev = "8.5.0";
-    hash = "sha256-LAGu+LbGH8jvMmGO9NoTL5UKAxDd85vNDrCQQEVMQ0M=";
+    rev = "9.0.1";
+    hash = "sha256-3lAzegva3j1wy21d9xdWfXBXUjCVOrjYPU1jSRSg/E4=";
   };
   ddix-ansible-ixp = pkgs.stdenv.mkDerivation {
-    name = "libfoo-1.2.3";
+    name = "ddix-ansible-ixp";
     src = lib.cleanSource ./.;
     installPhase = ''
       mkdir -p $out
