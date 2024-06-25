@@ -155,8 +155,8 @@ interface {{ iface }}
 {% set len = peers|count %}
 {% if len == 1 %}
 {% set peer = peers|first %}
-{% if peer.l2address %}
 mac access-list peer-eth{{ ifnum }}
+{% if peer.l2address %}
    10 remark AS{{ peer.asn }} allow arp broadcast
    11 permit vlan 600 0x000 {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 ff:ff:ff:ff:ff:ff 00:00:00:00:00:00 arp
    20 remark AS{{ peer.asn }} allow nd multicast
