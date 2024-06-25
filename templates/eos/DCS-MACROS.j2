@@ -188,9 +188,7 @@ mac access-list peer-eth{{ ifnum }}
 
 
 {% macro mac_address_table() -%}
-{% for peer in ixp_manager_peers|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short)|sort(attribute='l2address') %}
-{% if peer.l2address %}
+{% for peer in ixp_manager_peers|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short)|rejectattr('l2address', 'equalto', None)|sort(attribute='l2address') %}
 mac address-table static {{ peer.l2address|ansible.utils.hwaddr('cisco') }} vlan 600 interface {{ peer.switchport }}
-{% endif %}
 {% endfor %}
 {%- endmacro -%}
