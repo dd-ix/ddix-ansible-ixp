@@ -15,7 +15,7 @@
         let
           pkgs = (import nixpkgs) { inherit system; };
           derivation = pkgs.callPackage ./derivation.nix {
-            arouteserver = arouteserver.packages."${system}".arouteserver;
+            inherit (arouteserver.packages."${system}") arouteserver;
           };
         in
         {
@@ -25,8 +25,7 @@
         }
       ) // {
       overlays.default = _: prev: {
-        ddix-ixp-deploy = self.packages."${prev.system}".ddix-ixp-deploy;
-        ddix-ixp-commit = self.packages."${prev.system}".ddix-ixp-commit;
+        inherit (self.packages."${prev.system}") ddix-ixp-deploy ddix-ixp-commit;
       };
     };
 }
