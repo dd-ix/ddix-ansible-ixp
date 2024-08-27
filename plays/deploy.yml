@@ -1,6 +1,6 @@
 #!/usr/bin/env ansible-playbook
 
-- name: build sflow meta.yml
+- name: Build sflow meta.yml
   hosts: localhost
   roles:
     - sflow_build
@@ -9,7 +9,7 @@
     - sflow_build
     - sflow
 
-- name: build bird.conf
+- name: Build bird.conf
   hosts: localhost
   roles:
     - bird_build
@@ -18,7 +18,7 @@
     - bird_build
     - bird
 
-- name: build eos config
+- name: Build eos config
   hosts: localhost
   roles:
     - eos_build
@@ -28,7 +28,7 @@
     - eos
 
 
-- name: push sflow config
+- name: Push sflow config
   hosts: sflow
   roles:
     - sflow_push
@@ -39,7 +39,7 @@
     - sflow_push
     - sflow
 
-- name: push bird config
+- name: Push bird config
   hosts: bird
   serial: 1
   any_errors_fatal: true
@@ -50,7 +50,7 @@
     - bird_push
     - bird
 
-- name: push eos config
+- name: Push eos config
   hosts: eos
   serial: 1
   any_errors_fatal: true
@@ -64,7 +64,7 @@
     - eos
 
 
-- name: reload bird
+- name: Reload bird
   hosts: bird
   serial: 1
   any_errors_fatal: true
@@ -76,7 +76,7 @@
     - bird_engage
     - bird
 
-- name: enable eos config
+- name: Enable eos config
   hosts: eos
   connection: network_cli
   become: true
