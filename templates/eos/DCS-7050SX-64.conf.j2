@@ -98,6 +98,7 @@ router bgp 65044
       rd 65044:20600
       route-target both 65044:20600
       redistribute learned
+      redistribute static
    !
    address-family evpn
       neighbor backbone activate
