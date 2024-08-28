@@ -13,12 +13,12 @@
 
 - name: Build IPv4 RDNS zone file
   ansible.builtin.template:
-    src: 64.151.201.193.in-addr.arpa.db.j2
-    dest: "{{ arouteserver_workdir }}/dist/64.151.201.193.in-addr.arpa.db"
+    src: 64-127.151.201.193.in-addr.arpa.db.j2
+    dest: "{{ arouteserver_workdir }}/dist/64-127.151.201.193.in-addr.arpa.db"
   register: zone_fwd
 
 - name: Update IPv4 RDNS soa file
   ansible.builtin.template:
     src: zone.soa.j2
-    dest: "{{ arouteserver_workdir }}/dist/64.151.201.193.in-addr.arpa.soa"
+    dest: "{{ arouteserver_workdir }}/dist/64-127.151.201.193.in-addr.arpa.soa"
   when: zone_fwd.changed

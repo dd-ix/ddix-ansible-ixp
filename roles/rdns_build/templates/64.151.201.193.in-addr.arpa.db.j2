@@ -1,9 +1,0 @@
-{{ ansible_managed | comment(decoration="; ") }}
-
-$TTL	3600
-
-$INCLUDE /var/lib/bind/ixp-deploy/64.151.201.193.in-addr.arpa.soa
-
-{% for peer in ixp_manager_peers %}
-{{ "%-32s"|format(peer.ipv4address|ansible.utils.ipaddr('revdns')|regex_replace('^(\d+)\\.', '\\1.64.')) }} PTR  {{ peer.slug|lower }}.{{ peer.switchname|regex_replace('^ixp-([^-]+)-sw\d+$', '\\1') }}.peer.dd-ix.net.
-{% endfor %}
