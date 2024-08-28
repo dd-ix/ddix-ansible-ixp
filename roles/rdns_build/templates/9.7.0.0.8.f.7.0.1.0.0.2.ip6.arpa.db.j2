@@ -1,0 +1,9 @@
+{{ ansible_managed | comment(decoration="; ") }}
+
+$TTL	3600
+
+$INCLUDE /var/lib/bind/ixp-deploy/9.7.0.0.8.f.7.0.1.0.0.2.ip6.arpa.soa
+
+{% for peer in ixp_manager_peers %}
+{{ "%-32s"|format(peer.ipv6address|ansible.utils.ipaddr('revdns')) }} PTR  {{ peer.slug|lower }}.{{ peer.switchname|regex_replace('^ixp-([^-]+)-sw\d+$', '\\1') }}.peer.dd-ix.net.
+{% endfor %}

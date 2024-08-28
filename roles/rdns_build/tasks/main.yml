@@ -1,0 +1,24 @@
+- name: Build IPv6 RDNS zone file
+  ansible.builtin.template:
+    src: 9.7.0.0.8.f.7.0.1.0.0.2.ip6.arpa.db.j2
+    dest: "{{ arouteserver_workdir }}/dist/9.7.0.0.8.f.7.0.1.0.0.2.ip6.arpa.db"
+  register: zone_fwd
+
+- name: Update IPv6 RDNS soa file
+  ansible.builtin.template:
+    src: zone.soa.j2
+    dest: "{{ arouteserver_workdir }}/dist/9.7.0.0.8.f.7.0.1.0.0.2.ip6.arpa.soa"
+  when: zone_fwd.changed
+
+
+- name: Build IPv4 RDNS zone file
+  ansible.builtin.template:
+    src: 64.151.201.193.in-addr.arpa.db.j2
+    dest: "{{ arouteserver_workdir }}/dist/64.151.201.193.in-addr.arpa.db"
+  register: zone_fwd
+
+- name: Update IPv4 RDNS soa file
+  ansible.builtin.template:
+    src: zone.soa.j2
+    dest: "{{ arouteserver_workdir }}/dist/64.151.201.193.in-addr.arpa.soa"
+  when: zone_fwd.changed
