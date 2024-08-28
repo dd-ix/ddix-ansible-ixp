@@ -1,0 +1,13 @@
+{{ ansible_managed | comment(decoration="; ") }}
+
+@	    SOA ns.dd-ix.net. noc.dd-ix.net. (
+			{{ "%-10s"|format(ansible_date_time.epoch) }}     ; serial
+			3600		; Refresh - 1 hour
+			7200		; Retry - 2 hours
+			2592000		; Expire - 1 week
+			1800 )		; Minimum - 1/2 hour
+		NS	ans-01.ibh.de.
+		NS	ans-02.ibh.net.
+		NS	ans-03.ibh.de.
+		NS	ans-04.ibh.services.
+		NS	ans-05.ibh.net.

@@ -27,6 +27,15 @@
     - eos_build
     - eos
 
+- name: Build RDNS zone files
+  hosts: localhost
+  roles:
+    - rdns_build
+  tags:
+    - build
+    - rdns_build
+    - rdns
+
 
 - name: Push sflow config
   hosts: sflow
@@ -63,6 +72,17 @@
     - eos_push
     - eos
 
+- name: Push RDNS zone files
+  hosts: rdns
+  roles:
+    - rdns_push
+  vars:
+    ansible_user: ixp-deploy
+  tags:
+    - push
+    - rdns_push
+    - rdns
+
 
 - name: Reload bird
   hosts: bird
@@ -92,3 +112,15 @@
     - engage
     - eos_engage
     - eos
+
+- name: Reload named
+  hosts: rdns
+  roles:
+    - role: rdns_reload
+      when: engage_config|default(False)
+  vars:
+    ansible_user: ixp-deploy
+  tags:
+    - engage
+    - rdns_engage
+    - rdns

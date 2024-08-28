@@ -1,0 +1,9 @@
+- name: Upload zone files
+  ansible.builtin.copy:
+    src: "{{ hostvars.localhost.arouteserver_workdir }}/dist/{{ item }}"
+    dest: "/var/lib/bind/ixp-deploy/{{ item }}"
+  loop:
+    - 64.151.201.193.in-addr.arpa.db
+    - 64.151.201.193.in-addr.arpa.soa
+    - 9.7.0.0.8.f.7.0.1.0.0.2.ip6.arpa.db
+    - 9.7.0.0.8.f.7.0.1.0.0.2.ip6.arpa.soa

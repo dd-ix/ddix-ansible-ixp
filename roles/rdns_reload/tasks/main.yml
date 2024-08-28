@@ -1,0 +1,2 @@
+- name: Reload named # noqa:no-changed-when
+  ansible.builtin.command: sudo -n /run/current-system/sw/bin/systemctl reload bind.service
