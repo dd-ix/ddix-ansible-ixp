@@ -1,7 +1,7 @@
 {{ ansible_managed | comment(decoration="; ") }}
 
 @	    SOA ns.dd-ix.net. noc.dd-ix.net. (
-			{{ "%-10s"|format(ansible_date_time.epoch) }}     ; serial
+			{{ "%-10s"|format(lookup('pipe', 'date +%s')) }}     ; serial
 			3600		; Refresh - 1 hour
 			7200		; Retry - 2 hours
 			2592000		; Expire - 1 week
