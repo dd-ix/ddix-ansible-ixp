@@ -62,7 +62,7 @@ cfg:
       enabled: true
     reject_policy:
       policy: tag_and_reject
-  rfc8950: true
+  rfc8950: false
   add_path: true
   graceful_shutdown:
     enabled: true
