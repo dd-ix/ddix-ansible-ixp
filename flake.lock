@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1722251945,
-        "narHash": "sha256-xpb0MXuWQMWR8ZJFpQumJhEaZovTlfb/RQxy2YFDsNI=",
+        "lastModified": 1725645827,
+        "narHash": "sha256-H0hvFmkmvOI/cPaVf1Mt6F5B8nD0CqS9kSfSjYTXUZ4=",
         "owner": "dd-ix",
         "repo": "arouteserver.nix",
-        "rev": "9e4ae4256ef4317f403208cf9a85545dd23bca57",
+        "rev": "799a1b08ac993d05c333bdf034f1d8e01d75038a",
         "type": "github"
       },
       "original": {
