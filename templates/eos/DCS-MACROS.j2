@@ -202,12 +202,12 @@ mac access-list peer-eth{{ ifnum }}
 ip access-list peer-eth{{ ifnum }}-ipv4
 {% if peer.ipv4address %}
    10 remark AS{{ peer.asn }} allow router IP
-   11 permit vlan 600 0xfff ip host {{ peer.ipv4address }} any
+   11 permit vlan 600 0x000 ip host {{ peer.ipv4address }} any
 {% else %}
    10 remark AS{{ peer.asn }} peer has no ipv4address
 {% endif %}
    20 remark AS{{ peer.asn }} report IP abuse
-   21 permit vlan 600 0xfff ip 193.201.151.64/26 193.201.151.64/26 log
+   21 permit vlan 600 0x000 ip 193.201.151.64/26 193.201.151.64/26 log
    100 remark allow any other traffic
    101 permit ip any any
 !
@@ -227,12 +227,12 @@ ip access-list peer-eth{{ ifnum }}-ipv4
 ipv6 access-list peer-eth{{ ifnum }}-ipv6
 {% if peer.ipv6address %}
    10 remark AS{{ peer.asn }} allow router IP
-   11 permit vlan 600 0xfff ipv6 host {{ peer.ipv6address }} any
+   11 permit vlan 600 0x000 ipv6 host {{ peer.ipv6address }} any
 {% else %}
    10 remark AS{{ peer.asn }} peer has no ipv6address
 {% endif %}
    20 remark AS{{ peer.asn }} report IP abuse
-   21 permit vlan 600 0xfff ipv6 2001:7f8:79::/64 2001:7f8:79::/64 log
+   21 permit vlan 600 0x000 ipv6 2001:7f8:79::/64 2001:7f8:79::/64 log
    100 remark allow any other traffic
    101 permit ipv6 any any
 !
