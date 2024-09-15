@@ -35,6 +35,8 @@
 {% macro iface_cfg_ethernet_peer_peering(ifnum, status, peer) %}
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    switchport access vlan 600
+   ip access-group peer-eth{{ ifnum }}-ipv4 in
+   ipv6 access-group peer-eth{{ ifnum }}-ipv6 in
    mac access-group peer-eth{{ ifnum }} in
    no lldp transmit
    no lldp receive
@@ -47,6 +49,8 @@
 {% macro iface_cfg_ethernet_peer_quarantine(ifnum, status, peer) %}
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    switchport access vlan 666
+   ip access-group peer-eth{{ ifnum }}-ipv4 in
+   ipv6 access-group peer-eth{{ ifnum }}-ipv6 in
    mac access-group peer-eth{{ ifnum }} in
    no lldp transmit
    no lldp receive
@@ -59,6 +63,8 @@
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    shutdown
    switchport access vlan 666
+   ip access-group peer-eth{{ ifnum }}-ipv4 in
+   ipv6 access-group peer-eth{{ ifnum }}-ipv6 in
    mac access-group peer-eth{{ ifnum }} in
    no lldp transmit
    no lldp receive
@@ -196,13 +202,13 @@ mac access-list peer-eth{{ ifnum }}
 ip access-list peer-eth{{ ifnum }}-ipv4
 {% if peer.ipv4address %}
    10 remark AS{{ peer.asn }} allow router IP
-   11 permit ip host {{ peer.ipv4address }} any
+   11 permit vlan 600 0xfff ip host {{ peer.ipv4address }} any
 {% else %}
    10 remark AS{{ peer.asn }} peer has no ipv4address
 {% endif %}
-   20 remark AS{{ peer.asn }} report other router IPs
-   21 permit ip 193.201.151.64/26 any log
-   100 remark allow any other (transit) traffic
+   20 remark AS{{ peer.asn }} report IP abuse
+   21 permit vlan 600 0xfff ip 193.201.151.64/26 193.201.151.64/26 log
+   100 remark allow any other traffic
    101 permit ip any any
 !
 {% elif len != 0 %}
@@ -221,13 +227,13 @@ ip access-list peer-eth{{ ifnum }}-ipv4
 ipv6 access-list peer-eth{{ ifnum }}-ipv6
 {% if peer.ipv6address %}
    10 remark AS{{ peer.asn }} allow router IP
-   11 permit ipv6 host {{ peer.ipv6address }} any
+   11 permit vlan 600 0xfff ipv6 host {{ peer.ipv6address }} any
 {% else %}
    10 remark AS{{ peer.asn }} peer has no ipv6address
 {% endif %}
-   20 remark AS{{ peer.asn }} report other router IPs
-   21 permit ipv6 2001:7f8:79::/64 any log
-   100 remark allow any other (transit) traffic
+   20 remark AS{{ peer.asn }} report IP abuse
+   21 permit vlan 600 0xfff ipv6 2001:7f8:79::/64 2001:7f8:79::/64 log
+   100 remark allow any other traffic
    101 permit ipv6 any any
 !
 {% elif len != 0 %}
