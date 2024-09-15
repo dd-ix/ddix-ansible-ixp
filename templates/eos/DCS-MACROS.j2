@@ -187,6 +187,56 @@ mac access-list peer-eth{{ ifnum }}
 
 
 
+{% macro ip_acl_peer(ifnum) -%}
+{% set iface = "Ethernet%d"|format(ifnum) %}
+{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short) %}
+{% set len = peers|count %}
+{% if len == 1 %}
+{% set peer = peers|first %}
+ip access-list peer-eth{{ ifnum }}-ipv4
+{% if peer.ipv4address %}
+   10 remark AS{{ peer.asn }} allow router IP
+   11 permit ip host {{ peer.ipv4address }} any
+{% else %}
+   10 remark AS{{ peer.asn }} peer has no ipv4address
+{% endif %}
+   20 remark AS{{ peer.asn }} report other router IPs
+   21 permit ip 193.201.151.64/26 any log
+   100 remark allow any other (transit) traffic
+   101 permit ip any any
+!
+{% elif len != 0 %}
+{{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
+{% endif %}
+{%- endmacro -%}
+
+
+
+{% macro ipv6_acl_peer(ifnum) -%}
+{% set iface = "Ethernet%d"|format(ifnum) %}
+{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short) %}
+{% set len = peers|count %}
+{% if len == 1 %}
+{% set peer = peers|first %}
+ipv6 access-list peer-eth{{ ifnum }}-ipv6
+{% if peer.ipv6address %}
+   10 remark AS{{ peer.asn }} allow router IP
+   11 permit ipv6 host {{ peer.ipv6address }} any
+{% else %}
+   10 remark AS{{ peer.asn }} peer has no ipv6address
+{% endif %}
+   20 remark AS{{ peer.asn }} report other router IPs
+   21 permit ipv6 2001:7f8:79::/64 any log
+   100 remark allow any other (transit) traffic
+   101 permit ipv6 any any
+!
+{% elif len != 0 %}
+{{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
+{% endif %}
+{%- endmacro -%}
+
+
+
 {% macro mac_address_table() -%}
 {% for peer in ixp_manager_peers|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short)|rejectattr('l2address', 'equalto', None)|sort(attribute='l2address') %}
 mac address-table static {{ peer.l2address|ansible.utils.hwaddr('cisco') }} vlan 600 interface {{ peer.switchport }}
