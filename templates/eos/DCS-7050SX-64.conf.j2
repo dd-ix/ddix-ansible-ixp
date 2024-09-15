@@ -11,6 +11,8 @@ username ddix-deploy role network-admin secret sha512 {{ secrets.eos.deploy_hash
 username ddix-deploy ssh-key {{ secrets.eos.root_pubkey }}
 username ddix-deploy ssh-key secondary {{ secrets.eos.root_pubkey_2nd }}
 !
+hardware access-list update default-result permit
+!
 service interface unconnected expose
 !
 transceiver qsfp default-mode 4x10G
