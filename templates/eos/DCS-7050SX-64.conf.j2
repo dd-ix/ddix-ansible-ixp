@@ -51,22 +51,11 @@ aaa authentication login console local group radius
 !
 {% block mac_address_table %}
 {% endblock %}
-{# RFC8327: BGP Culling ACLs #}
-ipv6 access-list bgp-culling-ipv6
-   10 deny tcp 2001:7f8:79::/64 eq bgp 2001:7f8:79::/64
-   20 deny tcp 2001:7f8:79::/64 2001:7f8:79::/64 eq bgp
-   100 permit ipv6 any any
-!
 {% for ifnum, settings in switch_vars.interfaces.Ethernet|dictsort %}
 {% if settings.profile == "peer" %}
 {{ dcs.ipv6_acl_peer(ifnum) -}}
 {% endif %}
 {% endfor %}
-ip access-list bgp-culling-ipv4
-   10 deny tcp 193.201.151.64/26 eq bgp 193.201.151.64/26
-   20 deny tcp 193.201.151.64/26 193.201.151.64/26 eq bgp
-   100 permit ip any any
-!
 {% for ifnum, settings in switch_vars.interfaces.Ethernet|dictsort %}
 {% if settings.profile == "peer" %}
 {{ dcs.ip_acl_peer(ifnum) -}}
