@@ -206,8 +206,8 @@ ip access-list peer-eth{{ ifnum }}-ipv4
 {% else %}
    10 remark AS{{ peer.asn }} peer has no ipv4address
 {% endif %}
-   20 remark AS{{ peer.asn }} report IP abuse
-   21 permit vlan 600 0x000 ip 193.201.151.64/26 193.201.151.64/26 log
+   20 remark AS{{ peer.asn }} deny IP abuse
+   21 deny vlan 600 0x000 ip 193.201.151.64/26 193.201.151.64/26 log
    100 remark allow any other traffic
    101 permit ip any any
 !
@@ -231,8 +231,8 @@ ipv6 access-list peer-eth{{ ifnum }}-ipv6
 {% else %}
    10 remark AS{{ peer.asn }} peer has no ipv6address
 {% endif %}
-   20 remark AS{{ peer.asn }} report IP abuse
-   21 permit vlan 600 0x000 ipv6 2001:7f8:79::/64 2001:7f8:79::/64 log
+   20 remark AS{{ peer.asn }} deny IP abuse
+   21 deny vlan 600 0x000 ipv6 2001:7f8:79::/64 2001:7f8:79::/64 log
    100 remark allow any other traffic
    101 permit ipv6 any any
 !
