@@ -225,14 +225,28 @@ ip access-list peer-eth{{ ifnum }}-ipv4
 {% if len == 1 %}
 {% set peer = peers|first %}
 ipv6 access-list peer-eth{{ ifnum }}-ipv6
-{% if peer.ipv6address %}
-   10 remark AS{{ peer.asn }} allow router IP
-   11 permit vlan 600 0x000 ipv6 host {{ peer.ipv6address }} any
+{% if peer.l2address %}
+   10 remark AS{{ peer.asn }} IPv6 multicast (enforce mod. EUI64)
+   11 permit ipv6 {{ 'fe80::' | slaac(peer.l2address) }}/128 ff02::1/128
+   12 permit ipv6 {{ 'fe80::' | slaac(peer.l2address) }}/128 ff02::2/128
+   13 permit ipv6 {{ 'fe80::' | slaac(peer.l2address) }}/128 ff02::16/128
+   14 permit ipv6 {{ 'fe80::' | slaac(peer.l2address) }}/128 ff02:0:0:0:0:1:ff00::/104
 {% else %}
-   10 remark AS{{ peer.asn }} peer has no ipv6address
+   10 remark AS{{ peer.asn }} IPv6 multicast (no l2address)
+   11 permit ipv6 fe80::/64 ff02::1/128
+   12 permit ipv6 fe80::/64 ff02::2/128
+   13 permit ipv6 fe80::/64 ff02::16/128
+   14 permit ipv6 fe80::/64 ff02:0:0:0:0:1:ff00::/104
 {% endif %}
-   20 remark AS{{ peer.asn }} deny IP abuse
-   21 deny vlan 600 0x000 ipv6 2001:7f8:79::/64 2001:7f8:79::/64 log
+   15 permit ipv6 any ff00::/8 log
+{% if peer.ipv6address %}
+   40 remark AS{{ peer.asn }} allow router IP
+   41 permit vlan 600 0x000 ipv6 host {{ peer.ipv6address }} any
+{% else %}
+   40 remark AS{{ peer.asn }} peer has no ipv6address
+{% endif %}
+   60 remark AS{{ peer.asn }} deny IP abuse
+   61 deny vlan 600 0x000 ipv6 2001:7f8:79::/64 2001:7f8:79::/64 log
    100 remark allow any other traffic
    101 permit ipv6 any any
 !
