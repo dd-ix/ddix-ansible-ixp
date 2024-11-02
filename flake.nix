@@ -1,22 +1,16 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    # backports needed for arouteserver
+    nixpkgs.url = "github:NuschtOS/nuschtpkgs/backports-24.05";
     flake-utils.url = "github:numtide/flake-utils";
-
-    arouteserver = {
-      url = "github:dd-ix/arouteserver.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = { self, nixpkgs, flake-utils, arouteserver }:
+  outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem
       (system:
         let
           pkgs = (import nixpkgs) { inherit system; };
-          derivation = pkgs.callPackage ./derivation.nix {
-            inherit (arouteserver.packages."${system}") arouteserver;
-          };
+          derivation = pkgs.callPackage ./derivation.nix { };
         in
         {
           packages = {
