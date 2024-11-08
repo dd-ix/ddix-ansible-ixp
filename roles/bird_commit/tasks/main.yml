@@ -35,6 +35,7 @@
             </ul>
         follow_redirects: no
       delegate_to: localhost
+      failed_when: false
 
     - name: stop on error
       ansible.builtin.fail:
@@ -68,4 +69,5 @@
             </ul>
         follow_redirects: no
       delegate_to: localhost
+      failed_when: false
       when: secrets.matrix.alerts_room_url is defined

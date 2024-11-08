@@ -76,6 +76,7 @@
             </ul>
         follow_redirects: no
       delegate_to: localhost
+      failed_when: false
       when: secrets.matrix.alerts_room_url is defined
 
     - name: fail on error

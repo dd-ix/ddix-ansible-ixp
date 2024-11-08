@@ -19,4 +19,5 @@
           </li>
     follow_redirects: no
   delegate_to: localhost
+  failed_when: false
   when: secrets.matrix.surveillance_room_url is defined
