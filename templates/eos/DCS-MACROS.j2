@@ -164,25 +164,26 @@ interface {{ iface }}
 mac access-list peer-eth{{ ifnum }}
 {% if peer.l2address %}
    10 remark AS{{ peer.asn }} allow arp broadcast
-   11 permit {% if acl_supports_vlan|default(true) %}vlan 600 0x000 {% endif %}{{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 ff:ff:ff:ff:ff:ff 00:00:00:00:00:00 arp
+   11 permit {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 ff:ff:ff:ff:ff:ff 00:00:00:00:00:00 arp
    20 remark AS{{ peer.asn }} allow nd multicast
-   21 permit {% if acl_supports_vlan|default(true) %}vlan 600 0x000 {% endif %}{{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 33:33:ff:00:00:00 00:00:00:ff:ff:ff ipv6
+   21 permit {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 33:33:ff:00:00:00 00:00:00:ff:ff:ff ipv6
 {% else %}
-   10 remark AS{{ peer.asn }} peer has no l2address
-   20 remark AS{{ peer.asn }} peer has no l2address
+   10 remark AS{{ peer.asn }} allow arp broadcast
+   11 permit any ff:ff:ff:ff:ff:ff 00:00:00:00:00:00 arp
+   20 remark AS{{ peer.asn }} allow nd multicast
+   21 permit any 33:33:ff:00:00:00 00:00:00:ff:ff:ff ipv6
 {% endif %}
    30 remark AS{{ peer.asn }} drop other broadcasts or multicasts
-   31 deny vlan 600 0x000 any 01:00:00:00:00:00 fe:ff:ff:ff:ff:ff log
+   31 deny any 01:00:00:00:00:00 fe:ff:ff:ff:ff:ff log
 {% if peer.l2address %}
    40 remark AS{{ peer.asn }} allow peering lan access
-   41 permit {% if acl_supports_vlan|default(true) %}vlan 600 0x000 {% endif %}{{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 any arp
-   42 permit {% if acl_supports_vlan|default(true) %}vlan 600 0x000 {% endif %}{{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 any ip
-   43 permit {% if acl_supports_vlan|default(true) %}vlan 600 0x000 {% endif %}{{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 any ipv6
+   41 permit {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 any arp
+   42 permit {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 any ip
+   43 permit {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 any ipv6
 {% else %}
    40 remark AS{{ peer.asn }} peer has no l2address
+   41 permit any any
 {% endif %}
-   50 remark AS{{ peer.asn }} allow quarantine vlan
-   51 permit {% if acl_supports_vlan|default(true) %}vlan 666 0x000 {% endif %}any any
    100 remark AS{{ peer.asn }} drop any
    101 deny any any log
 !
@@ -207,7 +208,7 @@ ip access-list peer-eth{{ ifnum }}-ipv4
    10 remark AS{{ peer.asn }} peer has no ipv4address
 {% endif %}
    20 remark AS{{ peer.asn }} deny IP abuse
-   21 deny vlan 600 0x000 ip 193.201.151.64/26 193.201.151.64/26 log
+   21 deny {% if acl_supports_vlan|default(true) %}vlan 600 0x000 {% endif %}ip 193.201.151.64/26 193.201.151.64/26 log
    100 remark allow any other traffic
    101 permit ip any any
 !
@@ -238,7 +239,7 @@ ipv6 access-list peer-eth{{ ifnum }}-ipv6
    20 remark AS{{ peer.asn }} peer has no ipv6address
 {% endif %}
    30 remark AS{{ peer.asn }} deny IPv6 abuse
-   31 deny vlan 600 0x000 ipv6 2001:7f8:79::/64 2001:7f8:79::/64 log
+   31 deny {% if acl_supports_vlan|default(true) %}vlan 600 0x000 {% endif %}ipv6 2001:7f8:79::/64 2001:7f8:79::/64 log
    100 remark allow any other traffic
    101 permit ipv6 any any
 !
