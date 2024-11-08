@@ -32,11 +32,11 @@
       - peer.ipv4address|ansible.utils.ipv4('address') == peer.ipv4address
       - peer.ipv4bgpmd5secret is match('^[a-zA-Z0-9]*$')
       - peer.ipv4hostname is match('^(((?!-))(xn--|_)?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9\-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$')
-      - peer.ipv4peeringmacro == None or peer.ipv4peeringmacro is match('^[A-Z0-9-]+$')
+      - peer.ipv4peeringmacro == None or peer.ipv4peeringmacro is match('^(AS' + peer.asn|string + ':)?[A-Z0-9-]+$')
       - peer.ipv6address|ansible.utils.ipv6('address') == peer.ipv6address
       - peer.ipv6bgpmd5secret is match('^[a-zA-Z0-9]*$')
       - peer.ipv6hostname is match('^(((?!-))(xn--|_)?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9\-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$')
-      - peer.ipv6peeringmacro == None or peer.ipv6peeringmacro is match('^[A-Z0-9-]+$')
+      - peer.ipv6peeringmacro == None or peer.ipv6peeringmacro is match('(AS' + peer.asn|string + ':)?[A-Z0-9-]+$')
       - peer.switchport is match('^Ethernet\d{1,2}$')
       - peer.switchname in pop_switches
       - peer.vlanid|type_debug == 'int'
