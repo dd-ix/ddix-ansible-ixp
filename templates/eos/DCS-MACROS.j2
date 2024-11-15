@@ -49,8 +49,6 @@
 {% macro iface_cfg_ethernet_peer_quarantine(ifnum, status, peer) %}
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    switchport access vlan 666
-   ip access-group peer-eth{{ ifnum }}-ipv4 in
-   ipv6 access-group peer-eth{{ ifnum }}-ipv6 in
    mac access-group peer-eth{{ ifnum }} in
    no lldp transmit
    no lldp receive
@@ -63,8 +61,6 @@
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    shutdown
    switchport access vlan 666
-   ip access-group peer-eth{{ ifnum }}-ipv4 in
-   ipv6 access-group peer-eth{{ ifnum }}-ipv6 in
    mac access-group peer-eth{{ ifnum }} in
    no lldp transmit
    no lldp receive
