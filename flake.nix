@@ -1,7 +1,7 @@
 {
   inputs = {
     # backports needed for arouteserver
-    nixpkgs.url = "github:NuschtOS/nuschtpkgs/backports-24.05";
+    nixpkgs.url = "github:NuschtOS/nuschtpkgs/backports-24.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -10,12 +10,9 @@
       (system:
         let
           pkgs = (import nixpkgs) { inherit system; };
-          derivation = pkgs.callPackage ./derivation.nix { };
         in
         {
-          packages = {
-            inherit (derivation) ddix-ixp-deploy ddix-ixp-commit;
-          };
+          packages = pkgs.callPackage ./package.nix { };
         }
       ) // {
       overlays.default = _: prev: {

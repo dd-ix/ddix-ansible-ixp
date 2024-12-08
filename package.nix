@@ -4,8 +4,8 @@ let
   ansible-general = fetchFromGitHub {
     owner = "ansible-collections";
     repo = "community.general";
-    rev = "9.0.1";
-    hash = "sha256-3lAzegva3j1wy21d9xdWfXBXUjCVOrjYPU1jSRSg/E4=";
+    rev = "10.1.0";
+    hash = "sha256-6AE5msRvzwl2MupQmi+tcet+67sVe5nh2XUEsBbSu8U=";
   };
   ddix-ansible-ixp = stdenv.mkDerivation {
     name = "ddix-ansible-ixp";
