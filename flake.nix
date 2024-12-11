@@ -12,11 +12,11 @@
           pkgs = (import nixpkgs) { inherit system; };
         in
         {
-          packages = pkgs.callPackage ./package.nix { };
+          packages = {
+            inherit (pkgs.callPackage ./package.nix { }) ddix-ixp-deploy ddix-ixp-commit;
+          };
         }
       ) // {
-      overlays.default = _: prev: {
-        inherit (self.packages."${prev.system}") ddix-ixp-deploy ddix-ixp-commit;
-      };
+      overlays.default = _: prev: self.packages."${prev.system}";
     };
 }
