@@ -1,5 +1,5 @@
 - name: retrieve lbu status
-  ansible.builtin.command: doas /sbin/lbu status
+  ansible.builtin.command: doas /usr/sbin/lbu status
   changed_when: no
   check_mode: no
   register: lbu_status
@@ -43,7 +43,7 @@
 - name: save pending changes
   block:
     - name: run lbu commit
-      ansible.builtin.command: doas /sbin/lbu commit
+      ansible.builtin.command: doas /usr/sbin/lbu commit
       notify: notify about lbu commit
       when: lbu_status.stdout_lines|length > 0
   rescue:
