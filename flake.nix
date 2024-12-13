@@ -17,6 +17,6 @@
           };
         }
       ) // {
-      overlays.default = _: prev: self.packages."${prev.system}";
+      overlays.default = _: prev: self.packages."${prev.stdenv.system}";
     };
 }
