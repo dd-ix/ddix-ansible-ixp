@@ -17,6 +17,8 @@
           };
         }
       ) // {
-      overlays.default = _: prev: self.packages."${prev.stdenv.system}";
+      overlays.default = _: prev: {
+        inherit (self.packages."${prev.stdenv.system}") ddix-ixp-deploy ddix-ixp-commit;
+      };
     };
 }
