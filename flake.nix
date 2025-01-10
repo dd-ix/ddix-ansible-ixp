@@ -14,6 +14,7 @@
         {
           packages = {
             inherit (pkgs.callPackage ./package.nix { }) ddix-ixp-deploy ddix-ixp-commit;
+            inherit (pkgs) arouteserver;
           };
         }
       ) // {
