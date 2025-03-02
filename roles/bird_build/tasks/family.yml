@@ -11,3 +11,4 @@
     - ipv6
   loop_control:
     loop_var: family
+  when: peer[family + 'enabled']
