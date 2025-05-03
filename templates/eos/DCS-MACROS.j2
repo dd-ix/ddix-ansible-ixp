@@ -248,6 +248,6 @@ ipv6 access-list peer-eth{{ ifnum }}-ipv6
 
 {% macro mac_address_table() -%}
 {% for peer in ixp_manager_peers|selectattr('switchname', 'equalto', switch_vars.ixp_manager_lookup)|rejectattr('l2address', 'equalto', None)|sort(attribute='l2address') %}
-mac address-table static {{ peer.l2address|ansible.utils.hwaddr('cisco') }} vlan 600 interface {{ peer.switchport }}
+mac address-table static {{ peer.l2address|ansible.utils.hwaddr('cisco') }} vlan 600 interface {{ peer.switchport }}{% if mac_acl_trailing_space|default(false) %} {% endif +%}
 {% endfor %}
 {%- endmacro -%}
