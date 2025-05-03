@@ -98,16 +98,12 @@
 
 - name: Enable eos config
   hosts: eos
-  connection: ansible.netcommon.network_cli
-  become: true
-  become_method: ansible.netcommon.enable
+  remote_user: root
   serial: 1
   any_errors_fatal: true
   roles:
     - role: eos_configure
       when: engage_config|default(False)
-  vars:
-    ansible_network_os: "{{ engage_network_os }}"
   tags:
     - engage
     - eos_engage

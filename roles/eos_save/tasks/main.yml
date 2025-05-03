@@ -1,27 +1,25 @@
 - name: reconfigure eos
   block:
     - name: retrieve current config
-      arista.eos.eos_command:
-        commands:
-          - show running-config
+      ansible.builtin.command: Cli -p 15 -c "show running-config"
+      changed_when: false
       register: running_config
+      check_mode: no
 
     - name: retrieve startup config
-      arista.eos.eos_command:
-        commands:
-          - show startup-config
+      ansible.builtin.command: Cli -p 15 -c "show startup-config"
+      changed_when: false
       register: startup_config
+      check_mode: no
 
     - name: test for pending changes
       ansible.utils.fact_diff:
-        before: '{{ startup_config.stdout_lines[0]|reject("match", "^(!|\s*$)") }}'
-        after: '{{ running_config.stdout_lines[0]|reject("match", "^(!|$)") }}'
+        before: '{{ startup_config.stdout_lines[1:]|reject("match", "^(!|\s*$)") }}'
+        after: '{{ running_config.stdout_lines[2:]|reject("match", "^(!|$)") }}'
       register: config_diff
 
     - name: replace running config
-      arista.eos.eos_command:
-        commands:
-          - write memory
+      ansible.builtin.command: Cli -p 15 -c "write memory"
       when: config_diff.changed
       changed_when: true
       notify: notify about eos save

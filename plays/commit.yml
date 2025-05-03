@@ -9,9 +9,7 @@
 
 - name: save eos config
   hosts: eos
-  connection: ansible.netcommon.network_cli
-  become: true
-  become_method: ansible.netcommon.enable
+  remote_user: root
   roles:
     - role: eos_save
   vars:

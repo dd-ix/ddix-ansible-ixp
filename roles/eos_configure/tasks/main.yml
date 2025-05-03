@@ -1,28 +1,25 @@
 - name: reconfigure eos
   block:
     - name: retrieve current config
-      arista.eos.eos_command:
-        commands:
-          - show running-config
+      ansible.builtin.command: Cli -p 15 -c "show running-config"
+      changed_when: false
       register: running_config
+      check_mode: no
 
     - name: retrieve deployed config
-      arista.eos.eos_command:
-        commands:
-          - "copy flash:ddix-config terminal:"
+      ansible.builtin.command: Cli -p 15 -c "copy flash:ddix-config terminal:"
+      changed_when: false
       register: deployed_config
       check_mode: no
 
     - name: test for pending changes
       ansible.utils.fact_diff:
-        before: '{{ running_config.stdout_lines[0]|reject("match", "^(!|$)") }}'
-        after: '{{ deployed_config.stdout_lines[0][:-1]|reject("match", "^(!|\s*$)") }}'
+        before: '{{ running_config.stdout_lines[2:]|reject("match", "^(!|$)") }}'
+        after: '{{ deployed_config.stdout_lines[1:-1]|reject("match", "^(!|\s*$)") }}'
       register: config_diff
 
     - name: replace running config
-      arista.eos.eos_command:
-        commands:
-          - configure replace flash:ddix-config
+      ansible.builtin.command: Cli -p 15 -c "configure replace flash:ddix-config"
       when: config_diff.changed
       register: configure
       changed_when: true
