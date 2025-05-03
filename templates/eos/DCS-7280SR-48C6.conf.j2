@@ -14,7 +14,7 @@ username ddix-deploy ssh-key secondary {{ secrets.eos.root_pubkey_2nd }}
 !
 hardware access-list update default-result permit
 !
-service interface unconnected expose
+no service interface inactive port-id allocation disabled
 !
 transceiver qsfp default-mode 4x10G
 !
@@ -38,6 +38,10 @@ snmp-server vrf inband-mgmt
 !
 spanning-tree mode none
 !
+system l1
+   unsupported speed action error
+   unsupported error-correction action error
+!
 {% block vlans %}
 {% endblock %}
 vrf instance inband-mgmt
@@ -49,6 +53,8 @@ aaa authentication login console local group radius
 !
 {% block interfaces %}
 {% endblock %}
+hardware tcam
+   system profile vxlan-routing
 !
 {% block mac_address_table %}
 {% endblock %}

@@ -70,7 +70,7 @@
 {%- endmacro -%}
 
 {% macro iface_cfg_ethernet_peer(iface, ifnum) -%}
-{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short) %}
+{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.ixp_manager_lookup) %}
 interface {{ iface }}
 {% set len = peers|count %}
 {% if len == 0 %}
@@ -153,7 +153,7 @@ interface {{ iface }}
 
 {% macro mac_acl_peer(ifnum) -%}
 {% set iface = "Ethernet%d"|format(ifnum) %}
-{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short) %}
+{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.ixp_manager_lookup) %}
 {% set len = peers|count %}
 {% if len == 1 %}
 {% set peer = peers|first %}
@@ -192,7 +192,7 @@ mac access-list peer-eth{{ ifnum }}
 
 {% macro ip_acl_peer(ifnum) -%}
 {% set iface = "Ethernet%d"|format(ifnum) %}
-{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short) %}
+{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.ixp_manager_lookup) %}
 {% set len = peers|count %}
 {% if len == 1 %}
 {% set peer = peers|first %}
@@ -217,7 +217,7 @@ ip access-list peer-eth{{ ifnum }}-ipv4
 
 {% macro ipv6_acl_peer(ifnum) -%}
 {% set iface = "Ethernet%d"|format(ifnum) %}
-{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short) %}
+{% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.ixp_manager_lookup) %}
 {% set len = peers|count %}
 {% if len == 1 %}
 {% set peer = peers|first %}
@@ -247,7 +247,7 @@ ipv6 access-list peer-eth{{ ifnum }}-ipv6
 
 
 {% macro mac_address_table() -%}
-{% for peer in ixp_manager_peers|selectattr('switchname', 'equalto', switch_vars.inventory_hostname_short)|rejectattr('l2address', 'equalto', None)|sort(attribute='l2address') %}
+{% for peer in ixp_manager_peers|selectattr('switchname', 'equalto', switch_vars.ixp_manager_lookup)|rejectattr('l2address', 'equalto', None)|sort(attribute='l2address') %}
 mac address-table static {{ peer.l2address|ansible.utils.hwaddr('cisco') }} vlan 600 interface {{ peer.switchport }}
 {% endfor %}
 {%- endmacro -%}

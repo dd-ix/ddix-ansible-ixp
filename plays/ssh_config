@@ -1,2 +1,12 @@
 Include /etc/ssh/ssh_config
 Include ~/.ssh/config
+
+Host lab-cc-sw01.dd-ix.net
+        ProxyJump ddix-deploy@con-ddix-lab.ibh.net
+        Hostname 2a01:7700:80b0:4000::1
+        StrictHostKeyChecking no
+
+Host lab-c2-sw01.dd-ix.net
+        ProxyJump ddix-deploy@con-ddix-lab.ibh.net
+        Hostname 2a01:7700:80b0:4000::2
+        StrictHostKeyChecking no

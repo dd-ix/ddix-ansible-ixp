@@ -1,4 +1,14 @@
 eos:
-  hosts:
-    ixp-cc-sw01.dd-ix.net:
-    ixp-c2-sw01.dd-ix.net:
+  children:
+    ixp:
+      hosts:
+        ixp-cc-sw01.dd-ix.net:
+        ixp-c2-sw01.dd-ix.net:
+      vars:
+        eos_child_group: ixp
+    lab:
+      hosts:
+        lab-cc-sw01.dd-ix.net:
+        lab-c2-sw01.dd-ix.net:
+      vars:
+        eos_child_group: lab

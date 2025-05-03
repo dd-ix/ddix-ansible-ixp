@@ -1,0 +1,1 @@
+ixp_manager_lookup: "{{ inventory_hostname_short }}"

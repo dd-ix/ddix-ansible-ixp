@@ -1,0 +1,72 @@
+{% extends "DCS-7280SR-48C6.conf.j2" %}
+
+{% block vlans %}
+{# metro-spanning peering lan #}
+vlan 600
+   name IXP-Peering
+!
+{# on-site management access #}
+vlan 602
+   name IXP-Mgmt-C2
+!
+{# on-site quarantine #}
+vlan 666
+   name IXP-Quarantine-C2
+!
+{% endblock %}
+
+
+
+{% block interfaces %}
+interface Port-Channel43
+   description IXP ixp-rs02
+   switchport trunk allowed vlan 600,602
+   switchport mode trunk
+   sflow enable
+{% for ifnum in range(1, 49) %}
+!
+{{ dcs.iface_config("Ethernet", ifnum, switch_vars.interfaces.Ethernet[ifnum]|default({"profile": "unused"})) -}}
+{% endfor %}
+{% for num in range(49, 55) %}
+{% set ifnum = "%d/1"|format(num) %}
+!
+{{ dcs.iface_config("Ethernet", ifnum, switch_vars.interfaces.Ethernet[ifnum]|default({"profile": "unused"})) -}}
+{% endfor %}
+{% for ifnum, settings in switch_vars.interfaces.Loopback|dictsort %}
+!
+{{ dcs.iface_config("Loopback", ifnum, settings) -}}
+{% endfor %}
+!
+interface Management1
+   ipv6 address 2001:db8::2/64
+!
+interface Vlan602
+   description SVI IXP-Mgmt-C2
+   vrf inband-mgmt
+   ipv6 enable
+   ipv6 address 2a01:7700:80b0:4002::1/64
+   ipv6 address fe80::1/64 link-local
+!
+interface Vxlan1
+   description VTEP
+   vxlan source-interface Loopback1
+   vxlan udp-port 4789
+   vxlan vlan 600 vni 20600
+   vxlan vrf inband-mgmt vni 30001
+!
+{% endblock %}
+
+
+
+{% block mac_address_table %}
+{# Peers: static mac-address table entries #}
+{{ dcs.mac_address_table() }}
+!
+{% endblock %}
+
+
+
+{% block routes %}
+ipv6 route vrf inband-mgmt ::/0 2a01:7700:80b0:4100::1
+!
+{% endblock %}
