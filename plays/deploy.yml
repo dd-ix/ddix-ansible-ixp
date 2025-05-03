@@ -98,9 +98,9 @@
 
 - name: Enable eos config
   hosts: eos
-  connection: network_cli
+  connection: ansible.netcommon.network_cli
   become: true
-  become_method: enable
+  become_method: ansible.netcommon.enable
   serial: 1
   any_errors_fatal: true
   roles:
