@@ -25,7 +25,7 @@
             <pre>{{ stdout|e }}</pre>
         {% endfor %}
         </ul>
-    follow_redirects: no
+    follow_redirects: none
   delegate_to: localhost
   failed_when: false
   when: secrets.matrix.surveillance_room_url is defined

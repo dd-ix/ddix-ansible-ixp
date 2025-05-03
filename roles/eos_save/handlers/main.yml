@@ -18,7 +18,7 @@
             <pre>{{ config_diff.diff_text|e }}</pre>
           </li>
         </ul>
-    follow_redirects: no
+    follow_redirects: none
   delegate_to: localhost
   failed_when: false
   when: secrets.matrix.surveillance_room_url is defined

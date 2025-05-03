@@ -23,7 +23,7 @@
           <li>Reconfigure:
             <pre>{{ configure.stdout|e }}</pre>
         </ul>
-    follow_redirects: no
+    follow_redirects: none
   delegate_to: localhost
   failed_when: false
   when: config_diff_short.changed and secrets.matrix.surveillance_room_url is defined

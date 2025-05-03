@@ -17,7 +17,7 @@
           <li>Changes:
             <pre>{{ lbu_status.stdout|e }}</pre>
           </li>
-    follow_redirects: no
+    follow_redirects: none
   delegate_to: localhost
   failed_when: false
   when: secrets.matrix.surveillance_room_url is defined
