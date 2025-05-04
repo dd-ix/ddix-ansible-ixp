@@ -1,6 +1,10 @@
 {% extends "DCS-7280SR-48C6.conf.j2" %}
 
 {% block vlans %}
+vlan 1
+   name VOID
+   state suspend
+!
 {# metro-spanning peering lan #}
 vlan 600
    name IXP-Peering
