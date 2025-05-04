@@ -135,6 +135,13 @@ router isis backbone
       multi-topology
 !
 management ssh
+   cipher aes256-gcm@openssh.com aes128-gcm@openssh.com chacha20-poly1305@openssh.com
+   key-exchange curve25519-sha256@libssh.org
+   mac hmac-sha2-512-etm@openssh.com hmac-sha2-256-etm@openssh.com
+   hostkey server ed25519 rsa
+   log-level verbose
+   logging target system
+   !
    vrf inband-mgmt
       no shutdown
 !
