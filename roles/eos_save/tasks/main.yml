@@ -14,7 +14,7 @@
 
     - name: test for pending changes
       ansible.utils.fact_diff:
-        before: '{{ startup_config.stdout_lines[1:]|reject("match", "^(!|\s*$)") }}'
+        before: '{{ startup_config.stdout_lines[2:]|reject("match", "^(!|\s*$)") }}'
         after: '{{ running_config.stdout_lines[2:]|reject("match", "^(!|$)") }}'
       register: config_diff
 
