@@ -24,7 +24,7 @@ vlan 666
 {% block interfaces %}
 interface Port-Channel43
    description IXP ixp-rs02
-   switchport trunk allowed vlan 600,602
+   switchport trunk allowed vlan 600,602,666
    switchport mode trunk
    sflow enable
 {% for ifnum in range(1, 49) %}
