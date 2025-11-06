@@ -26,6 +26,10 @@ interface Port-Channel43
    description IXP ixp-rs01
    switchport trunk allowed vlan 600-601,666
    switchport mode trunk
+{% if engage_culling|default(False)|bool %}
+   ip access-group bgp-culling-ipv4 in
+   ipv6 access-group bgp-culling-ipv6 in
+{% endif %}
    sflow enable
 !
 {# vxlan: need to do recirculation #}
