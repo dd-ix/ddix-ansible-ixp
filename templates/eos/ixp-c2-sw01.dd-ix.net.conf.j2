@@ -1,4 +1,4 @@
-{% extends "DCS-7050SX-64.conf.j2" %}
+{% extends "DCS-7280SR-48C6.conf.j2" %}
 
 {% block vlans %}
 vlan 1
@@ -27,22 +27,14 @@ interface Port-Channel43
    switchport trunk allowed vlan 600,602,666
    switchport mode trunk
    sflow enable
-!
-{# vxlan: need to do recirculation #}
-interface Recirc-Channel1
-   description REC VxLAN
-   no switchport
-   switchport recirculation features vxlan
 {% for ifnum in range(1, 49) %}
 !
 {{ dcs.iface_config("Ethernet", ifnum, switch_vars.interfaces.Ethernet[ifnum]|default({"profile": "unused"})) -}}
 {% endfor %}
-{% for num in range(49, 53) %}
-{% for sub in range(1, 5) %}
-{% set ifnum = "%d/%d"|format(num, sub) %}
+{% for num in range(49, 55) %}
+{% set ifnum = "%d/1"|format(num) %}
 !
 {{ dcs.iface_config("Ethernet", ifnum, switch_vars.interfaces.Ethernet[ifnum]|default({"profile": "unused"})) -}}
-{% endfor %}
 {% endfor %}
 {% for ifnum, settings in switch_vars.interfaces.Loopback|dictsort %}
 !
@@ -51,21 +43,6 @@ interface Recirc-Channel1
 !
 interface Management1
    ipv6 address 2001:db8::2/64
-{# vxlan: need to do recirculation #}
-{% for ifnum in range(1, 5) %}
-!
-interface UnconnectedEthernet{{ ifnum }}
-   description REC VxLAN
-   traffic-loopback source system device mac
-   channel-group recirculation 1
-{% endfor %}
-{# unused UnconnectedEthernet #}
-{% for ifnum in range(5, 17) %}
-!
-interface UnconnectedEthernet{{ ifnum }}
-   description REC UNUSED
-   shutdown
-{% endfor %}
 !
 interface Vlan602
    description SVI IXP-Mgmt-C2
