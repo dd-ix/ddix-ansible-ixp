@@ -17,6 +17,10 @@ The configs are based on:
 - [arouteserver directory](arouteserver/)
 - [sflow-exporter config seed](roles/sflow_build/templates/meta.yml.j2)
 
+## Fuse Knobs
+
+- `engage_config`: allows deployment to switches
+- `engage_culling`: adds BGP culling ACE
 
 ## Ansible Tags
 

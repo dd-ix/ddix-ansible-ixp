@@ -197,6 +197,11 @@ mac access-list peer-eth{{ ifnum }}
 {% if len == 1 %}
 {% set peer = peers|first %}
 ip access-list peer-eth{{ ifnum }}-ipv4
+{% if engage_culling|default(False)|bool %}
+   6 remark RFC8327 BGP Culling DD-IX
+   7 deny tcp 193.201.151.64/26 eq bgp 193.201.151.64/26
+   8 deny tcp 193.201.151.64/26 193.201.151.64/26 eq bgp
+{% endif %}
 {% if peer.ipv4address %}
    10 remark AS{{ peer.asn }} allow router IP
    11 permit {% if acl_supports_vlan|default(true) %}vlan 600 0x000 {% endif %}ip host {{ peer.ipv4address }} any
@@ -222,6 +227,11 @@ ip access-list peer-eth{{ ifnum }}-ipv4
 {% if len == 1 %}
 {% set peer = peers|first %}
 ipv6 access-list peer-eth{{ ifnum }}-ipv6
+{% if engage_culling|default(False)|bool %}
+   6 remark RFC8327 BGP Culling DD-IX
+   7 deny tcp 2001:7f8:79::/64 eq bgp 2001:7f8:79::/64
+   8 deny tcp 2001:7f8:79::/64 2001:7f8:79::/64 eq bgp
+{% endif %}
    10 remark AS{{ peer.asn }} IPv6 multicast
    11 permit ipv6 any host ff02::1
    12 permit ipv6 any host ff02::2
