@@ -1,3 +1,4 @@
+.ansible
 .vscode/
 arouteserver/clients.yml
 secrets.yml
