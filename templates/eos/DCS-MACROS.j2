@@ -185,7 +185,7 @@ mac access-list peer-eth{{ ifnum }}
 !
 {% elif len != 0 %}
 {{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
-{% endif %}
+{% else %}{{ '' }}{% endif %}
 {%- endmacro -%}
 
 
@@ -210,7 +210,7 @@ ip access-list peer-eth{{ ifnum }}-ipv4
 !
 {% elif len != 0 %}
 {{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
-{% endif %}
+{% else %}{{ '' }}{% endif %}
 {%- endmacro -%}
 
 
@@ -241,7 +241,7 @@ ipv6 access-list peer-eth{{ ifnum }}-ipv6
 !
 {% elif len != 0 %}
 {{ undef(hint='ASSERTION: found more than a single peer for iface %s'|format(iface)) }}
-{% endif %}
+{% else %}{{ '' }}{% endif %}
 {%- endmacro -%}
 
 
