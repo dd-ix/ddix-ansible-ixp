@@ -1,3 +1,6 @@
+- debug:
+    var: peer
+
 - name: build client peers
   include_tasks: client.yml
   vars:
@@ -11,4 +14,4 @@
     - ipv6
   loop_control:
     loop_var: family
-  when: peer[family + 'enabled']
+  when: peer[family + 'enabled'] == 1
