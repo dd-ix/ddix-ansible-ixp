@@ -24,7 +24,8 @@
       - peer.asn|type_debug == 'int'
       - (peer.asn > 0 and peer.asn < 64512) or (peer.asn > 131071 and peer.asn < 4200000000)
       - peer.maxprefixes|type_debug == 'int'
-      - peer.maxprefixes > 0
+      - peer.maxprefixesv6|type_debug == 'int'
+      - peer.maxprefixes > 0 or peer.maxprefixesv6 > 0
       - peer.status in ixp_manager_portstatus
       - peer.custname is match('^[a-zA-Z0-9_. -]+$')
       - peer.slug is match('^[A-Za-z0-9_.-]+$')
