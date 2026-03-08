@@ -7,7 +7,7 @@
   loop: "{{ ixp_manager_peers|sort(attribute='asn') }}"
   loop_control:
     loop_var: peer
-  when: peer.l2address != None
+  when: peer.l2address != None and peer.asn != 57328
 
 - name: build meta.yml from sql query
   ansible.builtin.template:
