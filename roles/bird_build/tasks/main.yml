@@ -10,6 +10,11 @@
   ansible.builtin.set_fact:
     ddix_peers: []
 
+- debug:
+    var: ixp_manager_peers|sort(attribute='asn')
+
+- pause:
+
 - name: prepare clients in address families
   include_tasks: family.yml
   loop: "{{ ixp_manager_peers|sort(attribute='asn') }}"

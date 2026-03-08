@@ -1,8 +1,5 @@
-- debug:
-    var: peer
-
-- name: build client peers
-  include_tasks: client.yml
+- name: Build client peers
+  ansible.builtin.include_tasks: client.yml
   vars:
     client:
       description: "{{ peer.custname }}"

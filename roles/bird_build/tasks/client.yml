@@ -1,36 +1,38 @@
-- name: set asn
+- name: Set asn
   ansible.builtin.set_fact:
-    client2: "{{ client|combine({ 'asn': peer.asn|int }) }}"
+    client2: "{{ client | combine({ 'asn': peer.asn | int }) }}"
 
-- name: set max_prefix limit
+- name: Set max_prefix limit
   ansible.builtin.set_fact:
-    client2: "{{ client2|combine({ 'cfg': {'filtering': {'max_prefix': {'limit_' + family: peer.maxprefixes }}}}, recursive=true) }}"
+    client2: "{{ client2 | combine({ 'cfg': {'filtering': {'max_prefix': {'limit_' + family: peer.maxprefixes }}}}, recursive=true) }}"
   when: family == "ipv4"
 
-- name: set max_prefix limit
+- name: Set max_prefix limit
   ansible.builtin.set_fact:
-    client2: "{{ client2|combine({ 'cfg': {'filtering': {'max_prefix': {'limit_' + family: peer.maxprefixesv6 }}}}, recursive=true) }}"
+    client2: "{{ client2 | combine({ 'cfg': {'filtering': {'max_prefix': {'limit_' + family: peer.maxprefixesv6 }}}}, recursive=true) }}"
   when: family == "ipv6"
 
-- name: set as-set filter
+- name: Set as-set filter
   ansible.builtin.set_fact:
-    client2: "{{ client2|combine({ 'cfg': {'filtering': {'irrdb': {'as_sets': [peer[family + 'peeringmacro']] }}}}, recursive=true) }}"
+    client2: "{{ client2 | combine({ 'cfg': {'filtering': {'irrdb': {'as_sets': [peer[family + 'peeringmacro']] }}}}, recursive=true) }}"
   when: peer[family + 'peeringmacro'] != None
 
-- name: set md5 secret
+- name: Set MD5 secret
   ansible.builtin.set_fact:
-    client2: "{{ client2|combine({ 'password': peer[family + 'bgpmd5secret']}, recursive=true) }}"
+    client2: "{{ client2 | combine({ 'password': peer[family + 'bgpmd5secret']}, recursive=true) }}"
   when: peer[family + 'bgpmd5secret'] != None and not build_masked
 
-- name: mask md5 secret
+- name: Mask MD5 secret
   ansible.builtin.set_fact:
-    client2: "{{ client2|combine({ 'password': '{MASKED}'}, recursive=true) }}"
+    client2: "{{ client2 | combine({ 'password': '{MASKED}'}, recursive=true) }}"
   when: peer[family + 'bgpmd5secret'] != None and build_masked
 
-- name: set pop community
+- name: Set POP community
   ansible.builtin.set_fact:
-    client2: "{{ client2|combine({ 'cfg': { 'attach_custom_communities': pop_switches[peer.switchname].communities }}, recursive=true) }}"
+    client2: "{{ client2 | combine({ 'cfg': { 'attach_custom_communities': pop_switches[peer.switchname].communities }}, recursive=true) }}"
 
-
-- ansible.builtin.set_fact:
+- name: Keep new peer
+  ansible.builtin.set_fact:
     ddix_peers: "{{ ddix_peers + [client2] }}"
+  # ignore duplicate items for peers with LAGs
+  when: ddix_peers|selectattr('ip', 'equalto', client2.ip) | length == 0
