@@ -15,7 +15,7 @@
   loop: "{{ ixp_manager_peers | sort(attribute='asn') }}"
   loop_control:
     loop_var: peer
-  when: ixp_manager_portstatus[peer.status].bird
+  when: ixp_manager_portstatus[peer.status].bird and peer.asn != 57328
 
 - name: Build clients.yml from sql query
   ansible.builtin.template:
