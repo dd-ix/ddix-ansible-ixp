@@ -1,4 +1,4 @@
-- name: create build directories
+- name: Create build directories
   ansible.builtin.file:
     path: "{{ arouteserver_workdir }}/{{ item }}"
     state: directory
@@ -6,28 +6,23 @@
     - cache
     - dist
 
-- name: prepare variables
+- name: Prepare variables
   ansible.builtin.set_fact:
     ddix_peers: []
 
-- debug:
-    var: ixp_manager_peers|sort(attribute='asn')
-
-- pause:
-
-- name: prepare clients in address families
-  include_tasks: family.yml
-  loop: "{{ ixp_manager_peers|sort(attribute='asn') }}"
+- name: Prepare clients in address families
+  ansible.builtin.include_tasks: family.yml
+  loop: "{{ ixp_manager_peers | sort(attribute='asn') }}"
   loop_control:
     loop_var: peer
   when: ixp_manager_portstatus[peer.status].bird
 
-- name: build clients.yml from sql query
+- name: Build clients.yml from sql query
   ansible.builtin.template:
     src: clients.yml.j2
     dest: "{{ arouteserver_workdir }}/dist/clients.yml"
 
-- name: run arouteserver bird
+- name: Run arouteserver bird
   ansible.builtin.shell: arouteserver bird --cfg arouteserver/arouteserver.yml --clients "{{ arouteserver_workdir }}/dist/clients.yml" -o "{{ arouteserver_workdir }}/dist/bird{% if build_masked %}.masked{% endif %}.conf" --cache-dir "{{ arouteserver_workdir }}/cache" --use-local-files logging
   args:
     chdir: "{{ playbook_dir }}/.."
@@ -35,7 +30,7 @@
     PEERINGDB_API: "{{ secrets.peeringdb_api }}"
   changed_when: false
 
-- name: run arouteserver html
+- name: Run arouteserver html
   ansible.builtin.shell: arouteserver html --cfg arouteserver/arouteserver.yml --clients "{{ arouteserver_workdir }}/dist/clients.yml" -o "{{ arouteserver_workdir }}/dist/bird{% if build_masked %}.masked{% endif %}.html" --cache-dir "{{ arouteserver_workdir }}/cache"
   args:
     chdir: "{{ playbook_dir }}/.."
