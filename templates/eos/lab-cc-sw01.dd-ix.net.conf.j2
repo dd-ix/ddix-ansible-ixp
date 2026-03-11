@@ -37,7 +37,8 @@ interface Recirc-Channel1
    description REC VxLAN
    no switchport
    switchport recirculation features vxlan
-{% for ifnum in range(1, 49) %}
+{% for num in range(1, 49) %}
+{% set ifnum = "%d"|format(num) %}
 !
 {{ dcs.iface_config("Ethernet", ifnum, switch_vars.interfaces.Ethernet[ifnum]|default({"profile": "unused"})) -}}
 {% endfor %}

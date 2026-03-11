@@ -21,6 +21,8 @@
 {% endif %}
 {%- endmacro -%}
 
+{% macro iface_ifslug(ifnum) %}{{ ifnum | replace('/', '_') }}{% endmacro %}
+
 {% macro iface_cfg_ethernet_peer_free() %}
    description FREE UNASSIGNED
    shutdown
@@ -35,9 +37,9 @@
 {% macro iface_cfg_ethernet_peer_peering(ifnum, status, peer) %}
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    switchport access vlan 600
-   ip access-group peer-eth{{ ifnum }}-ipv4 in
-   ipv6 access-group peer-eth{{ ifnum }}-ipv6 in
-   mac access-group peer-eth{{ ifnum }} in
+   ip access-group peer-eth{{ iface_ifslug(ifnum) }}-ipv4 in
+   ipv6 access-group peer-eth{{ iface_ifslug(ifnum) }}-ipv6 in
+   mac access-group peer-eth{{ iface_ifslug(ifnum) }} in
    no lldp transmit
    no lldp receive
    sflow enable
@@ -49,7 +51,7 @@
 {% macro iface_cfg_ethernet_peer_quarantine(ifnum, status, peer) %}
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    switchport access vlan 666
-   mac access-group peer-eth{{ ifnum }} in
+   mac access-group peer-eth{{ iface_ifslug(ifnum) }} in
    no lldp transmit
    no lldp receive
    storm-control broadcast level 0.01
@@ -61,7 +63,7 @@
    description {{ status.label }} AS{{ peer.asn }} {{ peer.slug }}
    shutdown
    switchport access vlan 666
-   mac access-group peer-eth{{ ifnum }} in
+   mac access-group peer-eth{{ iface_ifslug(ifnum) }} in
    no lldp transmit
    no lldp receive
    storm-control broadcast level 0.01
@@ -152,12 +154,12 @@ interface {{ iface }}
 
 
 {% macro mac_acl_peer(ifnum) -%}
-{% set iface = "Ethernet%d"|format(ifnum) %}
+{% set iface = "Ethernet%s"|format(ifnum) %}
 {% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.ixp_manager_lookup) %}
 {% set len = peers|count %}
 {% if len == 1 %}
 {% set peer = peers|first %}
-mac access-list peer-eth{{ ifnum }}
+mac access-list peer-eth{{ iface_ifslug(ifnum) }}
 {% if peer.l2address %}
    10 remark AS{{ peer.asn }} allow arp broadcast
    11 permit {{ peer.l2address|ansible.utils.hwaddr('linux') }} 00:00:00:00:00:00 ff:ff:ff:ff:ff:ff 00:00:00:00:00:00 arp
@@ -191,12 +193,12 @@ mac access-list peer-eth{{ ifnum }}
 
 
 {% macro ip_acl_peer(ifnum) -%}
-{% set iface = "Ethernet%d"|format(ifnum) %}
+{% set iface = "Ethernet%s"|format(ifnum) %}
 {% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.ixp_manager_lookup) %}
 {% set len = peers|count %}
 {% if len == 1 %}
 {% set peer = peers|first %}
-ip access-list peer-eth{{ ifnum }}-ipv4
+ip access-list peer-eth{{ iface_ifslug(ifnum) }}-ipv4
 {% if engage_culling|default(False)|bool %}
    6 remark RFC8327 BGP Culling DD-IX
    7 deny tcp 193.201.151.64/26 eq bgp 193.201.151.64/26
@@ -221,12 +223,12 @@ ip access-list peer-eth{{ ifnum }}-ipv4
 
 
 {% macro ipv6_acl_peer(ifnum) -%}
-{% set iface = "Ethernet%d"|format(ifnum) %}
+{% set iface = "Ethernet%s"|format(ifnum) %}
 {% set peers = ixp_manager_peers|selectattr('switchport', 'equalto', iface)|selectattr('switchname', 'equalto', switch_vars.ixp_manager_lookup) %}
 {% set len = peers|count %}
 {% if len == 1 %}
 {% set peer = peers|first %}
-ipv6 access-list peer-eth{{ ifnum }}-ipv6
+ipv6 access-list peer-eth{{ iface_ifslug(ifnum) }}-ipv6
 {% if engage_culling|default(False)|bool %}
    6 remark RFC8327 BGP Culling DD-IX
    7 deny tcp 2001:7f8:79::/64 eq bgp 2001:7f8:79::/64
