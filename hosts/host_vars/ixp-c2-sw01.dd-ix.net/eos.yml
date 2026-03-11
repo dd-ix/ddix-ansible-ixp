@@ -100,6 +100,8 @@ interfaces:
         vrf: inband-mgmt
         ipv6: 2a01:7700:80b0:4100::2/64
         lladdr: fe80::2/64
+    49/1:
+      profile: peer
   Loopback:
     0:
       profile: underlay
